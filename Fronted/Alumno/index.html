@@ -1,0 +1,44 @@
+<!-- Esto es un comentario en HTML -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Biblioteca</title>
+  <link rel="stylesheet" href="diseño.css">
+</head>
+<body>
+
+  <!-- ================= NAVBAR ================= -->
+  <header class="navbar">
+    <h2 class="logo">Biblioteca CUDI</h2>
+    <nav>
+      <a href="#">Inicio</a>
+      <a href="#">Preguntas Frecuentes</a>
+      <a href="#">Catálogo</a>
+      <a href="#">Contacto</a>
+      <button id="btnLogin" class="login-btn">Iniciar sesión</button>
+    </nav>
+  </header>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <h1>Bienvenido al Sistema de Gestión de Biblioteca</h1>
+    <p>Consultá, reservá y gestioná libros de forma simple</p>
+  </section>
+
+  <!-- ================= MODAL LOGIN ================= -->
+  <div id="loginModal" class="modal hidden">
+    <div class="login-form">
+      <h2>Iniciar sesión</h2>
+      <input type="text" placeholder="Usuario">
+      <input type="password" placeholder="Contraseña">
+      <button>Ingresar</button>
+      <a href="#">Olvidé mi contraseña</a>
+      <button id="cerrarModal" class="close-btn">Cerrar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+/* Asi se comenta en css */
+
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 3rem;
+  background-color: #0000008f; /* sin transparencia */
+  color: white;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 1.8rem;
+}
+
+.navbar nav a {
+  margin-left: 2rem;
+  color: white;
+  text-decoration: underline;
+  font-size: 1.2rem; /* más grande */
+}
+
+.navbar nav a:hover {
+  opacity: 0.7;
+}
+
+/* BOTÓN LOGIN DESTACADO */
+.login-btn {
+  margin-left: 2rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #ffbb00;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background-color: #1e4fc9;
+}
+
+/* ================= HERO ================= */
+
+.hero {
+  height: 110vh; /* más amplio */
+  background-image: url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmlibGlvdGVjYSUyMGVzY29sYXJ8ZW58MHx8MHx8fDA="); 
+  background-size: cover;
+  background-position: center;
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  padding: 2rem;
+}
+
+.hero h1 {
+font-size: 3.2rem;
+  margin-bottom: 1rem;
+  color: white;
+  -webkit-text-stroke: 1.5px black;
+}
+
+.hero p {
+font-size: 2rem; 
+  font-weight: bold;
+  color: white;
+
+  -webkit-text-stroke: 1px black;
+}
+
+/* ================= MODAL ================= */
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0,0,0,0.7);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.login-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 320px;
+  text-align: center;
+}
+
+.login-form input {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.7rem;
+}
+
+.login-form button {
+  width: 100%;
+  padding: 0.7rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.login-form a {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.close-btn {
+  background-color: #999;
+}
+/* ================= Seccion PreguntasyRespuestas================= */
+
+.faq-section {
+  margin-top: 140px;
+  padding: 2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.faq-section h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.faq-line {
+  border: none;
+  height: 2px;
+  background-color: #ff6b00; /* tu naranja */
+  margin-bottom: 2rem;
+}
+
+/* Item */
+.faq-item {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Botón pregunta */
+.faq-question {
+  width: 100%;
+  text-align: left;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.faq-question:hover {
+  color: #ff6b00;
+}
+
+/* Respuesta */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  padding: 0 1rem;
+}
+
+.faq-answer p {
+  padding: 1rem 0;
+}
