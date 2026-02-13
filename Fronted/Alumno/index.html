@@ -1,10 +1,9 @@
 <!-- Esto es un comentario en HTML -->
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Biblioteca</title>
+  <title>Biblioteca CUDI</title>
   <link rel="stylesheet" href="diseño.css">
 </head>
 <body>
@@ -13,18 +12,20 @@
   <header class="navbar">
     <h2 class="logo">Biblioteca CUDI</h2>
     <nav>
-      <a href="#">Inicio</a>
-      <a href="#">Preguntas Frecuentes</a>
-      <a href="#">Catálogo</a>
-      <a href="#">Contacto</a>
-      <button id="btnLogin" class="login-btn">Iniciar sesión</button>
+      <a href="#inicio">Inicio</a>
+      <a href="preguntas_frecuentes.html">Preguntas Frecuentes</a>
+      <a href="#catalogo">Catálogo</a>
+      <a href="#contacto" class="scroll-link">Contacto</a>
+      <button id="btnLogin" class="login-btn">Iniciar Sesion</button>
     </nav>
   </header>
 
   <!-- ================= HERO ================= -->
-  <section class="hero">
-    <h1>Bienvenido al Sistema de Gestión de Biblioteca</h1>
-    <p>Consultá, reservá y gestioná libros de forma simple</p>
+  <section class="hero" id="inicio">
+    <div class="hero-content">
+      <h1>Bienvenido al Sistema de Gestión de Biblioteca</h1>
+      <p>Consultá, reservá y gestioná libros de forma simple</p>
+    </div>
   </section>
 
   <!-- ================= MODAL LOGIN ================= -->
@@ -39,6 +40,17 @@
     </div>
   </div>
 
+  <!-- ================= CONTACTO ================= -->
+  <section class="contacto" id="contacto">
+    <h2>Contacto</h2>
+    <div class="icons">
+      <span>📧</span>
+      <span>📸</span>
+    </div>
+  </section>
+
   <script src="app.js"></script>
 </body>
 </html>
+
+

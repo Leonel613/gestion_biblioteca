@@ -1,31 +1,69 @@
 /*
   Asi comentamos varias lineas en Js....
 */
-
-// creacion de interfaz de inicio 
+// ================= LOGIN =================
 const btnLogin = document.getElementById("btnLogin");
 const modal = document.getElementById("loginModal");
 const cerrarModal = document.getElementById("cerrarModal");
 
-btnLogin.addEventListener("click", () => {
-  modal.classList.remove("hidden");
-});
+if (btnLogin && modal && cerrarModal) {
+  btnLogin.addEventListener("click", () => {
+    modal.classList.remove("hidden");
+  });
 
-cerrarModal.addEventListener("click", () => {
-  modal.classList.add("hidden");
-});
+  cerrarModal.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+}
 
-// salto a pagina de preguntas frecuentes
-const preguntas = document.querySelectorAll(".faq-question");
 
-preguntas.forEach(pregunta => {
-  pregunta.addEventListener("click", () => {
-    const respuesta = pregunta.nextElementSibling;
+// ================= SCROLL SUAVE =================
+const scrollLinks = document.querySelectorAll('.scroll-link');
 
-    if (respuesta.style.maxHeight) {
-      respuesta.style.maxHeight = null;
-    } else {
-      respuesta.style.maxHeight = respuesta.scrollHeight + "px";
+scrollLinks.forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const targetId = this.getAttribute('href').substring(1);
+    const target = document.getElementById(targetId);
+
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
     }
   });
 });
+
+// ================= FAQ ACORDEÓN =================
+const preguntas = document.querySelectorAll(".faq-question");
+
+if (preguntas.length > 0) {
+  preguntas.forEach(pregunta => {
+    pregunta.addEventListener("click", () => {
+
+      const respuestaActual = pregunta.nextElementSibling;
+
+      // cerrar todas
+      document.querySelectorAll(".faq-answer").forEach(respuesta => {
+        if (respuesta !== respuestaActual) {
+          respuesta.style.maxHeight = null;
+        }
+      });
+
+      document.querySelectorAll(".faq-question").forEach(btn => {
+        if (btn !== pregunta) {
+          btn.classList.remove("active");
+        }
+      });
+
+      // toggle actual
+      if (respuestaActual.style.maxHeight) {
+        respuestaActual.style.maxHeight = null;
+        pregunta.classList.remove("active");
+      } else {
+        respuestaActual.style.maxHeight = respuestaActual.scrollHeight + "px";
+        pregunta.classList.add("active");
+      }
+
+    });
+  });
+}
+

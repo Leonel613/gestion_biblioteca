@@ -1,0 +1,149 @@
+/* ================= esto es un comentario ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, #ffe5b4, #f5f5dc);
+}
+
+/* ================= NAVBAR ================= */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 3rem;
+  background-color: #009B4D;
+  color: white;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 1.8rem;
+}
+
+.navbar nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navbar nav a {
+  color: white;
+  text-decoration: underline;
+  font-size: 1.2rem;
+}
+
+.navbar nav a:hover {
+  opacity: 0.7;
+}
+
+/* ================= SECCIÓN FAQ ================= */
+.faq-section {
+  padding-top: 160px;
+  max-width: 900px;
+  margin: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.faq-section h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #064e3b;
+}
+
+.faq-line {
+  border: none;
+  height: 2px;
+  background-color: #064e3b;
+  margin-bottom: 2rem;
+}
+
+/* ================= PREGUNTAS ================= */
+.faq-question {
+  width: 100%;
+  padding: 1rem 0;
+  font-size: 22px;
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #064e3b;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(6, 78, 59, 0.2);
+}
+
+/* Flecha sutil */
+.arrow {
+  font-size: 14px;
+  opacity: 0.6;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.faq-question.active .arrow {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* ================= RESPUESTAS ================= */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.faq-answer p {
+  font-size: 20px;
+  color: #064e3b;
+  padding-bottom: 1.2rem;
+}
+
+/* ================= CONTACTO ================= */
+.contacto {
+  background-color: #f9eed6;
+  padding: 3rem 2rem;
+  text-align: center;
+  margin-top: 4rem;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+
+  .navbar {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .navbar nav {
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .faq-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .faq-question {
+    font-size: 20px;
+  }
+
+  .faq-answer p {
+    font-size: 18px;
+  }
+}
+
