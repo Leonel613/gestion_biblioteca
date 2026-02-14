@@ -197,3 +197,37 @@ font-size: 2rem;
 .faq-answer p {
   padding: 1rem 0;
 }
+.login-container {
+    background: rgba(255, 255, 255, 0.95);
+    width: 350px;
+    padding: 40px;
+    border-radius: 10px;
+    margin: 100px auto;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #f4b400;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-container button:hover {
+    background-color: #e0a800;
+}
+body {
+    background: url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmlibGlvdGVjYSUyMGVzY29sYXJ8ZW58MHx8MHx8fDA=") no-repeat center center/cover;
+}
