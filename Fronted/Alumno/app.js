@@ -57,4 +57,28 @@ if (loginForm) {
     }
   });
 }
-alert("JS cargado correctamente");
+alert("JS cargado correctamente"); /*
+  esta linea de codigo 60 se ve cuando cambias a cualquier parte del sitio
+  web porque los archivos html usan el mismo archivo Js.
+   para sacarlo se borra esta linea o lo protejes con un bloque if.
+   
+*/
+
+/*
+En vez de que te salga el recuadro de Js cargado correctamente 
+el siguiente bloque de simulacion hace que despues de autenticar al usuario
+te lleve al panel de alumno o bibliotecario, segun corresponda, se edita 
+el link que dirige al html con el nombre del archivo que corresponda al panel.
+
+if (email === "admin@cudi.com" && password === "1234") {
+  window.location.href = "panel_bibliotecario.html";
+} 
+else if (email === "alumno@cudi.com" && password === "1234") {
+  window.location.href = "panel_alumno.html";
+} 
+else {
+  alert("Correo o contraseña incorrectos.");
+}
+
+
+*/
