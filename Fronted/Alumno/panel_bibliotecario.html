@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Bibliotecario</title>
+    <link rel="stylesheet" href="diseño.css">
+</head>
+<body>
+
+    <h1>Panel del Bibliotecario</h1>
+
+    <p>Bienvenido, administrador.</p>
+
+    <ul>
+        <li>Gestionar libros</li>
+        <li>Ver préstamos activos</li>
+        <li>Registrar nuevo libro</li>
+    </ul>
+
+    <a href="login.html">Cerrar sesión</a>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Bibliotecario</title>
+    <link rel="stylesheet" href="diseño.css">
+</head>
+<body>
+
+    <h1>Panel del Bibliotecario</h1>
+
+    <h2>Crear nuevo usuario</h2>
+
+    <form id="crearUsuarioForm">
+        <input type="text" id="nuevoNombre" placeholder="Nombre completo" required>
+        
+        <input type="email" id="nuevoEmail" placeholder="Correo electrónico" required>
+        
+        <select id="nuevoRol" required>
+            <option value="">Seleccionar rol</option>
+            <option value="alumno">Alumno</option>
+            <option value="bibliotecario">Bibliotecario</option>
+        </select>
+
+        <input type="password" id="nuevoPassword" placeholder="Contraseña temporal" required>
+
+        <button type="submit">Crear usuario</button>
+    </form>
+
+    <p id="mensajeCreacion"></p>
+
+    <br>
+    <a href="login.html">Cerrar sesión</a>
+
+    <script src="app.js"></script>
+
+</body>
+</html>

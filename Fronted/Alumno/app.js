@@ -50,27 +50,6 @@ if (loginForm) {
 
     // Simulación
     if (email === "admin@cudi.com" && password === "1234") {
-      alert("Login exitoso - Bienvenido Bibliotecario");
-      window.location.href = "index.html";
-    } else {
-      alert("Correo o contraseña incorrectos.");
-    }
-  });
-}
-alert("JS cargado correctamente"); /*
-  esta linea de codigo 60 se ve cuando cambias a cualquier parte del sitio
-  web porque los archivos html usan el mismo archivo Js.
-   para sacarlo se borra esta linea o lo protejes con un bloque if.
-   
-*/
-
-/*
-En vez de que te salga el recuadro de Js cargado correctamente 
-el siguiente bloque de simulacion hace que despues de autenticar al usuario
-te lleve al panel de alumno o bibliotecario, segun corresponda, se edita 
-el link que dirige al html con el nombre del archivo que corresponda al panel.
-
-if (email === "admin@cudi.com" && password === "1234") {
   window.location.href = "panel_bibliotecario.html";
 } 
 else if (email === "alumno@cudi.com" && password === "1234") {
@@ -79,6 +58,29 @@ else if (email === "alumno@cudi.com" && password === "1234") {
 else {
   alert("Correo o contraseña incorrectos.");
 }
+  });
+}
+// --- Crear usuario (solo si existe el formulario) ---
+const crearUsuarioForm = document.getElementById("crearUsuarioForm");
 
+if (crearUsuarioForm) {
+  crearUsuarioForm.addEventListener("submit", function(e) {
+    e.preventDefault();
 
-*/
+    const nombre = document.getElementById("nuevoNombre").value;
+    const email = document.getElementById("nuevoEmail").value;
+    const rol = document.getElementById("nuevoRol").value;
+    const password = document.getElementById("nuevoPassword").value;
+
+    if (!nombre || !email || !rol || !password) {
+      alert("Complete todos los campos.");
+      return;
+    }
+
+    const mensaje = document.getElementById("mensajeCreacion");
+    mensaje.textContent = "Usuario creado correctamente (simulación).";
+    mensaje.style.color = "green";
+
+    crearUsuarioForm.reset();
+  });
+}
