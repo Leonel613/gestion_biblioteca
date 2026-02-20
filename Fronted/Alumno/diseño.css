@@ -231,3 +231,9 @@ font-size: 2rem;
 body {
     background: url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmlibGlvdGVjYSUyMGVzY29sYXJ8ZW58MHx8MHx8fDA=") no-repeat center center/cover;
 }
+.panel-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    margin: 40px;
+    border-radius: 10px;
+}

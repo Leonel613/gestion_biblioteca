@@ -84,3 +84,109 @@ if (crearUsuarioForm) {
     crearUsuarioForm.reset();
   });
 }
+// --- Panel Alumno ---
+const listaLibros = document.getElementById("listaLibros");
+const misPrestamos = document.getElementById("misPrestamos");
+const busquedaLibro = document.getElementById("busquedaLibro");
+
+if (listaLibros) {
+
+  let librosDisponibles = [
+    "Cien años de soledad",
+    "Don Quijote de la Mancha",
+    "El Principito",
+    "1984 - George Orwell",
+    "La Odisea"
+  ];
+
+  let librosPrestados = [];
+
+  function renderizar() {
+    listaLibros.innerHTML = "";
+    misPrestamos.innerHTML = "";
+
+    // Mostrar disponibles
+    librosDisponibles.forEach(libro => {
+      const li = document.createElement("li");
+      li.textContent = libro;
+
+      const btn = document.createElement("button");
+      btn.textContent = "Reservar";
+
+      btn.addEventListener("click", () => {
+        librosPrestados.push(libro);
+        librosDisponibles = librosDisponibles.filter(l => l !== libro);
+        renderizar();
+      });
+
+      li.appendChild(btn);
+      listaLibros.appendChild(li);
+    });
+
+    // Mostrar prestados
+    librosPrestados.forEach(libro => {
+      const li = document.createElement("li");
+      li.textContent = libro;
+
+      const btn = document.createElement("button");
+      btn.textContent = "Devolver";
+
+      btn.addEventListener("click", () => {
+        librosDisponibles.push(libro);
+        librosPrestados = librosPrestados.filter(l => l !== libro);
+        renderizar();
+      });
+
+      li.appendChild(btn);
+      misPrestamos.appendChild(li);
+    });
+  }
+
+  renderizar();
+
+  busquedaLibro.addEventListener("input", () => {
+    const filtro = busquedaLibro.value.toLowerCase();
+
+    listaLibros.innerHTML = "";
+
+    librosDisponibles
+      .filter(libro => libro.toLowerCase().includes(filtro))
+      .forEach(libro => {
+        const li = document.createElement("li");
+        li.textContent = libro;
+
+        const btn = document.createElement("button");
+        btn.textContent = "Reservar";
+
+        btn.addEventListener("click", () => {
+          librosPrestados.push(libro);
+          librosDisponibles = librosDisponibles.filter(l => l !== libro);
+          renderizar();
+        });
+
+        li.appendChild(btn);
+        listaLibros.appendChild(li);
+      });
+  });
+}
+// --- Logout ---
+const panel = document.querySelector(".panel-container");
+
+if (panel) {
+  let logoutBtn = document.getElementById("logoutBtn");
+
+  if (!logoutBtn) {
+    const btn = document.createElement("button");
+    btn.id = "logoutBtn";
+    btn.textContent = "Cerrar sesión";
+    btn.style.marginTop = "20px";
+
+    btn.addEventListener("click", () => {
+      window.location.href = "login.html";
+    });
+
+    panel.appendChild(btn);
+  }
+}
+
+console.log("JS funcionando en panel alumno");
