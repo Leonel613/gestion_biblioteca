@@ -11,30 +11,14 @@ html {
 
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, #ffe5b4, #f5f5dc);
+  background: #f9eed6;
 }
 
 /* ================= NAVBAR ================= */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 3rem;
-  background-color: #009B4D;
-  color: white;
-  position: fixed;
-  width: 100%;
-  z-index: 1000;
-}
-
-.logo {
-  font-size: 1.8rem;
-}
-
 .navbar nav {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 2rem; /* separación uniforme entre botones */
 }
 
 .navbar nav a {
@@ -60,7 +44,7 @@ body {
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 1rem;
-  color: #064e3b;
+  color: #0f014e;
 }
 
 .faq-line {
@@ -79,7 +63,7 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  color: #064e3b;
+  color: #270a5f;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -107,10 +91,9 @@ body {
 
 .faq-answer p {
   font-size: 20px;
-  color: #064e3b;
-  padding-bottom: 1.2rem;
+  color: #060d43;
+  padding: 1.5rem 0; /* antes 1rem */
 }
-
 /* ================= CONTACTO ================= */
 .contacto {
   background-color: #f9eed6;

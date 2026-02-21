@@ -1,0 +1,138 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9eed6;
+}
+
+/* NAVBAR */
+.navbar {
+  background-color: #270a5f;
+  color: white;
+  padding: 1.5rem 3rem;
+}
+
+.navbar nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+/* TITULO PRINCIPAL */
+.titulo-panel {
+  text-align: center;
+  font-size: 3rem;
+  margin-top: 2rem;
+}
+
+/* HAMBURGUESA */
+.hamburger {
+  font-size: 2rem;
+  cursor: pointer;
+  margin: 1rem;
+}
+
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 100%;
+  background-color: #0f172a;
+  padding-top: 80px;
+  transition: transform 0.3s ease;
+}
+
+/* OCULTO (corregido) */
+.hidden {
+  transform: translateX(-100%);
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-item {
+  padding: 1rem;
+  color: white;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background-color: #1e3a8a;
+}
+
+.menu-item.active {
+  background-color: #2563eb;
+}
+
+/* CONTENIDO */
+.content {
+  padding: 2rem;
+}
+
+/* SECCIONES */
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+}
+
+/* TITULOS (CORREGIDO A IZQUIERDA) */
+.section h1 {
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+/* SUB BOTONES (CORREGIDO A IZQUIERDA) */
+.sub-actions {
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.sub-actions a {
+  margin-right: 1rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* TABLAS */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+/* BOTONES */
+.btn-aprobar {
+  background-color: green;
+  color: white;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.btn-rechazar {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+
+/* SUBTITULO */
+.subtitulo {
+  margin-top: 2rem;
+  text-align: left;
+}
