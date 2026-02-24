@@ -47,19 +47,28 @@ if (loginForm) {
       alert("Por favor complete todos los campos.");
       return;
     }
+  
 
-    // Simulación
-    if (email === "admin@cudi.com" && password === "1234") {
+
+// Simulación con sesión
+if (email === "admin@cudi.com" && password === "1234") {
+
+  localStorage.setItem("rol", "bibliotecario");
   window.location.href = "panel_bibliotecario.html";
+
 } 
 else if (email === "alumno@cudi.com" && password === "1234") {
+
+  localStorage.setItem("rol", "alumno");
   window.location.href = "panel_alumno.html";
+
 } 
 else {
   alert("Correo o contraseña incorrectos.");
 }
-  });
-}
+}); 
+} 
+
 // --- Crear usuario (solo si existe el formulario) ---
 const crearUsuarioForm = document.getElementById("crearUsuarioForm");
 
@@ -84,6 +93,16 @@ if (crearUsuarioForm) {
     crearUsuarioForm.reset();
   });
 }
+// Protección del panel alumno
+if (window.location.pathname.includes("panel_alumno.html")) {
+
+  const rol = localStorage.getItem("rol");
+
+  if (rol !== "alumno") {
+    window.location.href = "login.html";
+  }
+}
+
 // --- Panel Alumno ---
 const listaLibros = document.getElementById("listaLibros");
 const misPrestamos = document.getElementById("misPrestamos");
@@ -182,8 +201,12 @@ if (panel) {
     btn.style.marginTop = "20px";
 
     btn.addEventListener("click", () => {
-      window.location.href = "login.html";
-    });
+
+  localStorage.removeItem("rol");   // 🔥 BORRA LA SESIÓN
+  window.location.href = "login.html";
+
+});
+
 
     panel.appendChild(btn);
   }
