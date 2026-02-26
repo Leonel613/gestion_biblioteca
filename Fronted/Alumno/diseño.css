@@ -237,3 +237,47 @@ body {
     margin: 40px;
     border-radius: 10px;
 }
+
+body {
+  background-color: #f0f2f5;
+  font-family: Arial, sans-serif;
+}
+
+.contenedor {
+  background-color: white;
+  width: 80%;
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+h1 {
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.libro {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.boton-prestamo {
+  background-color: #2e86de;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.boton-prestamo:hover {
+  background-color: #1b4f72;
+}

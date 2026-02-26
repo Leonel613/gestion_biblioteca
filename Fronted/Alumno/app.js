@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", function () {
 /*
   Asi comentamos varias lineas en Js....
 */
@@ -120,9 +121,13 @@ if (listaLibros) {
 
   let librosPrestados = [];
 
-  function renderizar() {
-    listaLibros.innerHTML = "";
-    misPrestamos.innerHTML = "";
+ function renderizar() {
+   const contenedor = document.getElementById("listaLibros");
+   if (!contenedor) return;
+
+   contenedor.innerHTML = "";
+   ...
+}
 
     // Mostrar disponibles
     librosDisponibles.forEach(libro => {
@@ -213,3 +218,5 @@ if (panel) {
 }
 
 console.log("JS funcionando en panel alumno");
+
+});
