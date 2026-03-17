@@ -16,17 +16,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
     lista.forEach(libro => {
       const div = document.createElement("div");
-
       div.classList.add("libro");
 
-div.innerHTML = `
-  <h3>${libro.titulo}</h3>
-  <p>Autor: ${libro.autor}</p>
-  <p>Estado: ${libro.disponible ? "Disponible" : "No disponible"}</p>
-  ${libro.disponible ? `<button class="boton-prestamo">Solicitar préstamo</button>` : ""}
-`;
+      div.innerHTML = `
+        <h3>${libro.titulo}</h3>
+        <p>Autor: ${libro.autor}</p>
+        <p>Estado: ${libro.disponible ? "Disponible" : "No disponible"}</p>
+        ${libro.disponible ? `<button class="boton-prestamo">Reservar libro</button>` : ""}
+      `;
 
       contenedor.appendChild(div);
+
+      if (libro.disponible) {
+        const boton = div.querySelector(".boton-prestamo");
+
+        boton.addEventListener("click", function () {
+
+  let reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+
+  const nuevaReserva = {
+    libro: libro.titulo,
+    autor: libro.autor,
+    fecha: new Date().toLocaleDateString(),
+    estado: "pendiente"
+  };
+
+  reservas.push(nuevaReserva);
+
+  localStorage.setItem("reservas", JSON.stringify(reservas));
+
+  alert("Reserva guardada para: " + libro.titulo);
+
+});
+      }
+
     });
   }
 
@@ -42,13 +65,5 @@ div.innerHTML = `
 
     mostrarLibros(filtrados);
   });
-
-  if (libro.disponible) {
-  const boton = div.querySelector(".boton-prestamo");
-
-  boton.addEventListener("click", function () {
-    alert("Préstamo solicitado para: " + libro.titulo);
-  });
-}
 
 });
