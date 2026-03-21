@@ -238,6 +238,25 @@ body {
     border-radius: 10px;
 }
 
+#logoutBtn {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: none;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 5px;
+}
+
+.cancelar-btn {
+  margin-top: 8px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 body {
   background-color: #f0f2f5;
   font-family: Arial, sans-serif;
@@ -289,4 +308,17 @@ input {
   color: white;
   text-decoration: none;
   border-radius: 6px;
+}
+
+#listaReservasPanel {
+  padding: 0;
+}
+
+#listaReservasPanel li {
+  background-color: white;
+  color: black;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 6px;
+  list-style: none;
 }

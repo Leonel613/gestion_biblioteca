@@ -9,20 +9,34 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  reservas.forEach(reserva => {
+  reservas.forEach((reserva, index) => {
 
-    const div = document.createElement("div");
-    div.classList.add("reserva");
+  const div = document.createElement("div");
+  div.classList.add("reserva");
 
-    div.innerHTML = `
-      <h3>${reserva.libro}</h3>
-      <p>Autor: ${reserva.autor}</p>
-      <p>Fecha: ${reserva.fecha}</p>
-      <p>Estado: ${reserva.estado}</p>
-    `;
+  div.innerHTML = `
+    <h3>${reserva.libro}</h3>
+    <p>Autor: ${reserva.autor}</p>
+    <p>Fecha: ${reserva.fecha}</p>
+    <p>Estado: ${reserva.estado}</p>
+    <button class="cancelar-btn">Cancelar</button>
+  `;
 
-    contenedor.appendChild(div);
+  // 🔴 BOTÓN CANCELAR
+  const boton = div.querySelector(".cancelar-btn");
+
+  boton.addEventListener("click", function () {
+
+    reservas.splice(index, 1);
+
+    localStorage.setItem("reservas", JSON.stringify(reservas));
+
+    location.reload();
 
   });
+
+  contenedor.appendChild(div);
+
+});
 
 });

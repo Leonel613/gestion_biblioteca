@@ -38,8 +38,10 @@ const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
   console.log("Formulario detectado");
+
   loginForm.addEventListener("submit", function(e) {
-    e.preventDefault(); console.log("Submit funcionando");
+    e.preventDefault();
+    console.log("Submit funcionando");
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -48,26 +50,31 @@ if (loginForm) {
       alert("Por favor complete todos los campos.");
       return;
     }
-  
 
+    // 🔹 LOGIN BIBLIOTECARIO
+    if (email === "admin@cudi.com" && password === "1234") {
 
-// Simulación con sesión
-if (email === "admin@cudi.com" && password === "1234") {
+      localStorage.setItem("rol", "bibliotecario");
+      localStorage.setItem("usuario", email);
 
-  localStorage.setItem("rol", "bibliotecario");
-  window.location.href = "panel_bibliotecario.html";
+      window.location.href = "panel_bibliotecario.html";
 
-} 
-else if (email === "alumno@cudi.com" && password === "1234") {
+    } 
+    // 🔹 LOGIN ALUMNO
+    else if (email === "alumno@cudi.com" && password === "1234") {
 
-  localStorage.setItem("rol", "alumno");
-  window.location.href = "panel_alumno.html";
+      localStorage.setItem("rol", "alumno");
+      localStorage.setItem("usuario", email);
 
-} 
-else {
-  alert("Correo o contraseña incorrectos.");
-}
-}); 
+      window.location.href = "panel_alumno.html";
+
+    } 
+    // ❌ ERROR
+    else {
+      alert("Correo o contraseña incorrectos.");
+    }
+
+  });
 } 
 
 // --- Crear usuario (solo si existe el formulario) ---
@@ -121,16 +128,17 @@ if (listaLibros) {
 
   let librosPrestados = [];
 
- function renderizar() {
-   const contenedor = document.getElementById("listaLibros");
-   if (!contenedor) return;
+  function renderizar(filtro = "") {
+    // Limpiar ambos contenedores
+    listaLibros.innerHTML = "";
+    misPrestamos.innerHTML = "";
 
-   contenedor.innerHTML = "";
-   ...
-}
+    // Mostrar disponibles (con filtro si aplica)
+    const librosAMostrar = filtro 
+      ? librosDisponibles.filter(libro => libro.toLowerCase().includes(filtro.toLowerCase()))
+      : librosDisponibles;
 
-    // Mostrar disponibles
-    librosDisponibles.forEach(libro => {
+    librosAMostrar.forEach(libro => {
       const li = document.createElement("li");
       li.textContent = libro;
 
@@ -140,7 +148,7 @@ if (listaLibros) {
       btn.addEventListener("click", () => {
         librosPrestados.push(libro);
         librosDisponibles = librosDisponibles.filter(l => l !== libro);
-        renderizar();
+        renderizar(filtro);
       });
 
       li.appendChild(btn);
@@ -158,7 +166,7 @@ if (listaLibros) {
       btn.addEventListener("click", () => {
         librosDisponibles.push(libro);
         librosPrestados = librosPrestados.filter(l => l !== libro);
-        renderizar();
+        renderizar(filtro);
       });
 
       li.appendChild(btn);
@@ -169,28 +177,7 @@ if (listaLibros) {
   renderizar();
 
   busquedaLibro.addEventListener("input", () => {
-    const filtro = busquedaLibro.value.toLowerCase();
-
-    listaLibros.innerHTML = "";
-
-    librosDisponibles
-      .filter(libro => libro.toLowerCase().includes(filtro))
-      .forEach(libro => {
-        const li = document.createElement("li");
-        li.textContent = libro;
-
-        const btn = document.createElement("button");
-        btn.textContent = "Reservar";
-
-        btn.addEventListener("click", () => {
-          librosPrestados.push(libro);
-          librosDisponibles = librosDisponibles.filter(l => l !== libro);
-          renderizar();
-        });
-
-        li.appendChild(btn);
-        listaLibros.appendChild(li);
-      });
+    renderizar(busquedaLibro.value);
   });
 }
 // --- Logout ---
@@ -218,5 +205,50 @@ if (panel) {
 }
 
 console.log("JS funcionando en panel alumno");
+
+});
+// logout y bienvenida en panel alumno
+document.addEventListener("DOMContentLoaded", function () {
+
+  const lista = document.getElementById("listaReservasPanel");
+
+  if (!lista) return;
+
+  const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+
+  if (reservas.length === 0) {
+    lista.innerHTML = "<li>No tenés reservas</li>";
+    return;
+  }
+
+  reservas.forEach(reserva => {
+    const li = document.createElement("li");
+    li.textContent = `${reserva.libro} - ${reserva.estado}`;
+    lista.appendChild(li);
+  });
+
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const bienvenida = document.getElementById("bienvenida");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (bienvenida) {
+    const usuario = localStorage.getItem("usuario");
+
+    if (usuario) {
+      bienvenida.textContent = "Bienvenido, " + usuario;
+    } else {
+      bienvenida.textContent = "No hay usuario logueado";
+    }
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", function () {
+      localStorage.removeItem("usuario");
+      window.location.href = "index.html";
+    });
+  }
 
 });
