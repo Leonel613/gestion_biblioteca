@@ -252,3 +252,27 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const usuario = localStorage.getItem("usuario");
+
+  // 🔒 Bloquear acceso si no está logueado
+  if (!usuario && (
+    window.location.pathname.includes("panel_alumno.html") ||
+    window.location.pathname.includes("mis_reservas.html")
+  )) {
+    window.location.href = "login.html";
+  }
+
+  // 🔁 Evitar volver al login si ya está logueado
+  if (usuario && window.location.pathname.includes("login.html")) {
+    window.location.href = "panel_alumno.html";
+  }
+
+});
+
+// Si ya está logueado y va a login → lo mandamos al panel
+if (usuario && window.location.pathname.includes("login.html")) {
+  window.location.href = "panel_alumno.html";
+}

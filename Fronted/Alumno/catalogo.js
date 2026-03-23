@@ -28,30 +28,35 @@ document.addEventListener("DOMContentLoaded", function () {
       contenedor.appendChild(div);
 
       if (libro.disponible) {
-        const boton = div.querySelector(".boton-prestamo");
+  const boton = div.querySelector(".boton-prestamo");
 
-        boton.addEventListener("click", function () {
+  boton.addEventListener("click", function () {
 
-  let reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+    const usuario = localStorage.getItem("usuario");
 
-  const nuevaReserva = {
-    libro: libro.titulo,
-    autor: libro.autor,
-    fecha: new Date().toLocaleDateString(),
-    estado: "pendiente"
-  };
+    if (!usuario) {
+      alert("Debes iniciar sesión para reservar un libro.");
+      window.location.href = "login.html";
+      return;
+    }
 
-  reservas.push(nuevaReserva);
+    const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
 
-  localStorage.setItem("reservas", JSON.stringify(reservas));
+    const nuevaReserva = {
+      libro: libro.titulo,
+      autor: libro.autor,
+      fecha: new Date().toLocaleDateString(),
+      estado: "Pendiente"
+    };
 
-  alert("Reserva guardada para: " + libro.titulo);
+    reservas.push(nuevaReserva);
 
-});
-      }
+    localStorage.setItem("reservas", JSON.stringify(reservas));
 
-    });
-  }
+    alert("Reserva guardada para: " + libro.titulo);
+
+  });
+}
 
   mostrarLibros(libros);
 
