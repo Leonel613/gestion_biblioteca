@@ -16,47 +16,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
     lista.forEach(libro => {
       const div = document.createElement("div");
-      div.classList.add("libro");
+      div.classList.add("card", "libro");
 
       div.innerHTML = `
         <h3>${libro.titulo}</h3>
         <p>Autor: ${libro.autor}</p>
         <p>Estado: ${libro.disponible ? "Disponible" : "No disponible"}</p>
-        ${libro.disponible ? `<button class="boton-prestamo">Reservar libro</button>` : ""}
+        ${libro.disponible ? `<button class="boton-prestamo">Reservar libro</button>` : `<span class="no-disponible">No disponible</span>`}
       `;
 
       contenedor.appendChild(div);
 
       if (libro.disponible) {
-  const boton = div.querySelector(".boton-prestamo");
+        const boton = div.querySelector(".boton-prestamo");
 
-  boton.addEventListener("click", function () {
+        boton.addEventListener("click", function () {
 
-    const usuario = localStorage.getItem("usuario");
+          const usuario = localStorage.getItem("usuario");
 
-    if (!usuario) {
-      alert("Debes iniciar sesión para reservar un libro.");
-      window.location.href = "login.html";
-      return;
-    }
+          if (!usuario) {
+            alert("Debes iniciar sesión para reservar un libro.");
+            window.location.href = "login.html";
+            return;
+          }
 
-    const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+          const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
 
-    const nuevaReserva = {
-      libro: libro.titulo,
-      autor: libro.autor,
-      fecha: new Date().toLocaleDateString(),
-      estado: "Pendiente"
-    };
+          const nuevaReserva = {
+            libro: libro.titulo,
+            autor: libro.autor,
+            fecha: new Date().toLocaleDateString(),
+            estado: "Pendiente"
+          };
 
-    reservas.push(nuevaReserva);
+          reservas.push(nuevaReserva);
 
-    localStorage.setItem("reservas", JSON.stringify(reservas));
+          localStorage.setItem("reservas", JSON.stringify(reservas));
 
-    alert("Reserva guardada para: " + libro.titulo);
+          alert("Reserva guardada para: " + libro.titulo);
 
-  });
-}
+        });
+      }
+    });
+  }
 
   mostrarLibros(libros);
 

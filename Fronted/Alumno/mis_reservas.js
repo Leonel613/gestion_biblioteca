@@ -1,5 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+  const usuario = localStorage.getItem("usuario");
+  const rol = localStorage.getItem("rol");
+
+  if (!usuario || rol !== "alumno") {
+    alert("Debes iniciar sesión como alumno para ver tus reservas.");
+    window.location.href = "login.html";
+    return;
+  }
+
   const contenedor = document.getElementById("listaReservas");
 
   const reservas = JSON.parse(localStorage.getItem("reservas")) || [];

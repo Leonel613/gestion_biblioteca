@@ -247,7 +247,9 @@ document.addEventListener("DOMContentLoaded", function () {
   if (logoutBtn) {
     logoutBtn.addEventListener("click", function () {
       localStorage.removeItem("usuario");
-      window.location.href = "index.html";
+      localStorage.removeItem("rol");
+      localStorage.removeItem("reservas");
+      window.location.href = "login.html";
     });
   }
 
