@@ -12,13 +12,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const contenedor = document.getElementById("listaReservas");
 
   const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+  const reservasUsuario = reservas.filter(reserva => reserva.usuario === usuario);
 
-  if (reservas.length === 0) {
+  if (reservasUsuario.length === 0) {
     contenedor.innerHTML = "<p>No tienes reservas aún.</p>";
     return;
   }
 
-  reservas.forEach((reserva, index) => {
+  reservasUsuario.forEach((reserva, index) => {
 
   const div = document.createElement("div");
   div.classList.add("reserva");
@@ -36,11 +37,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   boton.addEventListener("click", function () {
 
-    reservas.splice(index, 1);
+    const indiceGlobal = reservas.findIndex(r =>
+      r.usuario === reserva.usuario &&
+      r.libro === reserva.libro &&
+      r.autor === reserva.autor &&
+      r.fecha === reserva.fecha
+    );
 
-    localStorage.setItem("reservas", JSON.stringify(reservas));
-
-    location.reload();
+    if (indiceGlobal > -1) {
+      reservas.splice(indiceGlobal, 1);
+      localStorage.setItem("reservas", JSON.stringify(reservas));
+      location.reload();
+    }
 
   });
 

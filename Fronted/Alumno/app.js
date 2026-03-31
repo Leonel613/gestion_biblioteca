@@ -51,6 +51,13 @@ if (loginForm) {
       return;
     }
 
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Por favor ingrese un email válido.");
+      return;
+    }
+
     // 🔹 LOGIN BIBLIOTECARIO
     if (email === "admin@cudi.com" && password === "1234") {
 
@@ -214,14 +221,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (!lista) return;
 
+  const usuario = localStorage.getItem("usuario");
   const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+  const reservasUsuario = reservas.filter(reserva => reserva.usuario === usuario);
 
-  if (reservas.length === 0) {
+  if (reservasUsuario.length === 0) {
     lista.innerHTML = "<li>No tenés reservas</li>";
     return;
   }
 
-  reservas.forEach(reserva => {
+  reservasUsuario.forEach(reserva => {
     const li = document.createElement("li");
     li.textContent = `${reserva.libro} - ${reserva.estado}`;
     lista.appendChild(li);

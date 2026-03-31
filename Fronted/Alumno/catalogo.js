@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
 
           const nuevaReserva = {
+            usuario: usuario,
             libro: libro.titulo,
             autor: libro.autor,
             fecha: new Date().toLocaleDateString(),
