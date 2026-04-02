@@ -282,8 +282,3 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 });
-
-// Si ya está logueado y va a login → lo mandamos al panel
-if (usuario && window.location.pathname.includes("login.html")) {
-  window.location.href = "panel_alumno.html";
-}

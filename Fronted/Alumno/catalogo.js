@@ -40,7 +40,13 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
           }
 
-          const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+          let reservas = [];
+          try {
+            reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+          } catch (error) {
+            console.error("Error al cargar reservas:", error);
+            localStorage.removeItem("reservas");
+          }
 
           const nuevaReserva = {
             usuario: usuario,

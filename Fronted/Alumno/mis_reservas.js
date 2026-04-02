@@ -11,7 +11,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const contenedor = document.getElementById("listaReservas");
 
-  const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+  let reservas = [];
+  try {
+    reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+  } catch (error) {
+    console.error("Error al cargar reservas:", error);
+    localStorage.removeItem("reservas");
+  }
   const reservasUsuario = reservas.filter(reserva => reserva.usuario === usuario);
 
   if (reservasUsuario.length === 0) {
