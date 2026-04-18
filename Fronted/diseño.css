@@ -18,7 +18,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 3rem;
-  background-color: #270a5f; /* Banner principal principal */
+  background-color: #2c3e50; /* Banner principal principal */
   color: white;
   position: fixed;
   width: 100%;
@@ -77,7 +77,7 @@ body {
 /* Caja de texto translúcida */
 .hero-content {
   position: relative;
-  background: rgba(4, 8, 129, 0.74);
+  background: #2c3e50ae;
   padding: 3rem 4rem;
   border-radius: 12px;
   text-align: center;
