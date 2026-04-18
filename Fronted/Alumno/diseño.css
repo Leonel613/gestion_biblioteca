@@ -9,6 +9,7 @@
 
 body {
   font-family: Arial, sans-serif;
+  padding-top: 90px;
 }
 
 /* ================= NAVBAR ================= */
@@ -17,34 +18,35 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 3rem;
-  background-color: #0000008f; /* sin transparencia */
+  background-color: #2c3e50;
+  padding: 15px 20px;
   color: white;
+
   position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
+
+  box-sizing: border-box; /* 🔥 clave */
   z-index: 1000;
 }
-
-.logo {
-  font-size: 1.8rem;
+.navbar nav {
+  display: flex;
+  flex-wrap: wrap; /* 🔥 responsive */
 }
 
 .navbar nav a {
-  margin-left: 2rem;
+  margin-left: 15px;
   color: white;
-  text-decoration: underline;
-  font-size: 1.2rem; /* más grande */
-}
-
-.navbar nav a:hover {
-  opacity: 0.7;
+  text-decoration: none;
+  font-size: 1rem;
 }
 
 /* BOTÓN LOGIN DESTACADO */
 .login-btn {
   margin-left: 2rem;
   padding: 0.6rem 1.2rem;
-  background-color: #ffbb00;
+  background-color: #1154b9;
   color: white;
   border: none;
   border-radius: 6px;
@@ -196,4 +198,308 @@ font-size: 2rem;
 
 .faq-answer p {
   padding: 1rem 0;
+}
+.login-container {
+    background: rgba(255, 255, 255, 0.95);
+    width: 350px;
+    padding: 40px;
+    border-radius: 10px;
+    margin: 100px auto;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #f4b400;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+body {
+    background: url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmlibGlvdGVjYSUyMGVzY29sYXJ8ZW58MHx8MHx8fDA=") no-repeat center center/cover;
+}
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    margin: 40px;
+    border-radius: 10px;
+}
+
+#logoutBtn {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: none;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 5px;
+}
+
+.cancelar-btn {
+  margin-top: 8px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.contenedor {
+  background-color: white;
+  width: 80%;
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+h1 {
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.libro {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.boton-prestamo {
+  background-color: #2e86de;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.boton-prestamo:hover {
+  background-color: #1b4f72;
+
+}
+.boton {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+#listaReservasPanel {
+  padding: 0;
+}
+
+#listaReservasPanel li {
+  background-color: white;
+  color: black;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 6px;
+  list-style: none;
+}
+
+/* ===== CATÁLOGO - TARJETAS ===== */
+.libro {
+  background-color: white;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  width: 250px;
+}
+
+#listaLibros {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.card.libro, .libro {
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.boton-prestamo {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.no-disponible {
+  color: #b03030;
+  font-weight: 700;
+}
+
+.mis-reservas-container {
+  background-color: white;
+  padding: 20px;
+  margin: 1rem auto;
+  max-width: 900px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== BOTÓN ===== */
+.boton-prestamo {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.boton-prestamo:hover {
+  background-color: #2980b9;
+}
+
+/* ===== FONDO GENERAL ===== */
+
+/* ===== NAVBAR ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2c3e50;
+  padding: 10px 20px;
+  color: white;
+}
+
+.navbar .logo {
+  margin: 0;
+}
+
+.navbar nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 15px;
+  font-weight: bold;
+}
+
+.navbar nav a:hover {
+  text-decoration: underline;
+}
+
+/* ===== BOTÓN LOGOUT ===== */
+#logoutBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 8px 14px;
+  background-color: #e74c3c;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 1001;
+}
+
+#logoutBtn:hover {
+  background-color: #c0392b;
+}
+
+/* ===== CONTENEDOR GENERAL ===== */
+.panel-container {
+  padding: 20px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+
+.card {
+  background-color: white;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.card p,
+.card ul {
+  margin: 0 0 12px;
+  color: #333;
+}
+
+.card ul {
+  padding-left: 16px;
+}
+
+.card ul li {
+  margin-bottom: 6px;
+}
+
+#misPrestamos {
+  list-style: none;
+  padding-left: 0;
+}
+
+#misPrestamos li {
+  background: #f7f8fb;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+}
+
+
+/* ===== RESERVAS ===== */
+.reserva {
+  background-color: white;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+#listaReservas {
+  max-width: 600px;
+}
+.cancelar-btn {
+  margin-top: 10px;
+  padding: 6px 10px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancelar-btn:hover {
+  background-color: #c0392b;
+}
+#listaReservas {
+  margin: 0 auto;
 }
