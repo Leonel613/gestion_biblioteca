@@ -14,38 +14,6 @@ body {
   background: linear-gradient(to bottom, #ffe5b4, #f5f5dc);
 }
 
-/* ================= NAVBAR ================= */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 3rem;
-  background-color: #009B4D;
-  color: white;
-  position: fixed;
-  width: 100%;
-  z-index: 1000;
-}
-
-.logo {
-  font-size: 1.8rem;
-}
-
-.navbar nav {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.navbar nav a {
-  color: white;
-  text-decoration: underline;
-  font-size: 1.2rem;
-}
-
-.navbar nav a:hover {
-  opacity: 0.7;
-}
 
 /* ================= SECCIÓN FAQ ================= */
 .faq-section {
