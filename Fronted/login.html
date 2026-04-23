@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión - Biblioteca CUDI</title>
+    <link rel="stylesheet" href="diseño.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Iniciar Sesión</h2>
+
+        <form id="loginForm">
+            <label for="email" style="display: none;">Correo electrónico</label>
+            <input type="email" id="email" placeholder="Correo electrónico" aria-label="Correo electrónico" required>
+            <label for="password" style="display: none;">Contraseña</label>
+            <input type="password" id="password" placeholder="Contraseña" aria-label="Contraseña" required>
+
+            <button type="submit" aria-label="Botón para enviar formulario de login">Ingresar</button>
+        </form>
+
+        <div class="extra-links">
+            <a href="#">¿Olvidaste tu contraseña?</a><br>
+            <p class="info-login">
+                Si no tenés una cuenta, solicitá acceso a tu profesor o al bibliotecario para que te registren.
+            </p>
+            <a href="index.html" class="boton" style="margin-top: 12px; display: inline-block;">Volver a Inicio</a>
+        </div>
+    </div>
+<script src="app.js"></script>
+</body>
+</html>

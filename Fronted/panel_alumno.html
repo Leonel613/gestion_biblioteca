@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Alumno</title>
+    <link rel="stylesheet" href="diseño.css">
+</head>
+<body>
+    <header class="navbar">
+  <h2 class="logo">Biblioteca CUDI</h2>
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="panel_alumno.html">Panel</a>
+    <a href="catalogo.html">Catálogo</a>
+    <a href="mis_reservas.html">Mis reservas</a>
+  </nav>
+</header>
+<div class="panel-container">
+    <h1>Panel del Alumno</h1>
+
+    <p id="bienvenida"></p>
+    <button id="logoutBtn" aria-label="Cerrar sesión del usuario">Cerrar sesión</button>
+
+    <div class="card-grid">
+      <div class="card">
+        <h2>Resumen de Reservas</h2>
+        <ul id="listaReservasPanel"></ul>
+        <a href="mis_reservas.html" class="boton">Ver todas</a>
+      </div>
+
+      <div class="card">
+        <h2>Acciones rápidas</h2>
+        <p>Accede al catálogo y gestiona tus préstamos y reservas sin perder tiempo.</p>
+        <a href="catalogo.html" class="boton">Ir al catálogo</a>
+      </div>
+
+      <div class="card">
+        <h2>Préstamos actuales</h2>
+        <ul id="misPrestamos"></ul>
+      </div>
+    </div>
+
+</div>
+
+    <script src="./app.js"></script>
+   
+
+</body>
+</html>

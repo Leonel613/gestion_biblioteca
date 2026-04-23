@@ -12,12 +12,15 @@
   <header class="navbar">
     <h2 class="logo">Biblioteca CUDI</h2>
     <nav>
-      <a href="#inicio">Inicio</a>
-      <a href="preguntas_frecuentes.html">Preguntas Frecuentes</a>
-      <a href="#catalogo">Catálogo</a>
-      <a href="#contacto" class="scroll-link">Contacto</a>
-      <button id="btnLogin" class="login-btn">Iniciar Sesion</button>
-    </nav>
+  <nav>
+  <a href="#inicio">Inicio</a>
+  <a href="preguntas_frecuentes.html">Preguntas Frecuentes</a>
+  <a href="catalogo.html">Catálogo</a>
+  <a href="#contacto" class="scroll-link">Contacto</a>
+  <button onclick="window.location.href='login.html'" class="login-btn">
+    Iniciar sesión
+  </button>
+</nav>
   </header>
 
   <!-- ================= HERO ================= -->
@@ -28,17 +31,15 @@
     </div>
   </section>
 
-  <!-- ================= MODAL LOGIN ================= -->
-  <div id="loginModal" class="modal hidden">
-    <div class="login-form">
-      <h2>Iniciar sesión</h2>
-      <input type="text" placeholder="Usuario">
-      <input type="password" placeholder="Contraseña">
-      <button>Ingresar</button>
-      <a href="#">Olvidé mi contraseña</a>
-      <button id="cerrarModal" class="close-btn">Cerrar</button>
+  <!-- ================= CATÁLOGO DENTRO DE INICIO ================= -->
+  <section class="catalogo-home">
+    <div class="mis-reservas-container">
+      <h2>Catálogo (Home)</h2>
+      <input type="text" id="buscador" placeholder="Buscar por título o autor..." style="width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #ccc;" />
+      <div id="listaLibros"></div>
+      <a href="catalogo.html" class="boton" style="margin-top: 15px; display: inline-block;">Ver catálogo completo</a>
     </div>
-  </div>
+  </section>
 
   <!-- ================= CONTACTO ================= -->
   <section class="contacto" id="contacto">
@@ -50,6 +51,7 @@
   </section>
 
   <script src="app.js"></script>
+  <script src="catalogo.js"></script>
 </body>
 </html>
 

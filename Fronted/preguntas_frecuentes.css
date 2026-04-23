@@ -14,23 +14,6 @@ body {
   background: #f9eed6;
 }
 
-/* ================= NAVBAR ================= */
-.navbar nav {
-  display: flex;
-  align-items: center;
-  gap: 2rem; /* separación uniforme entre botones */
-}
-
-.navbar nav a {
-  color: white;
-  text-decoration: underline;
-  font-size: 1.2rem;
-}
-
-.navbar nav a:hover {
-  opacity: 0.7;
-}
-
 /* ================= SECCIÓN FAQ ================= */
 .faq-section {
   padding-top: 160px;
