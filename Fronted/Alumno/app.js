@@ -67,7 +67,6 @@ if (preguntas.length > 0) {
   });
 }
 
-=======
 // --- Lógica del login (solo si existe el formulario) ---
 const loginForm = document.getElementById("loginForm");
 
@@ -99,12 +98,14 @@ if (loginForm) {
       localStorage.setItem("rol", "bibliotecario");
       localStorage.setItem("usuario", email);
 
-      window.location.href = "panel_bibliotecario.html";
+      alert("Panel bibliotecario en desarrollo por tu compañera. Redirigiendo al inicio.");
+      window.location.href = "index.html";
 
     } 
     // 🔹 LOGIN ALUMNO
     else if (email === "alumno@cudi.com" && password === "1234") {
 
+      console.log("Login alumno exitoso");
       localStorage.setItem("rol", "alumno");
       localStorage.setItem("usuario", email);
 
@@ -244,35 +245,78 @@ if (panel) {
 
     panel.appendChild(btn);
   }
-}
+  }
 
 console.log("JS funcionando en panel alumno");
 
 // logout y bienvenida en panel alumno
-document.addEventListener("DOMContentLoaded", function () {
 
   const lista = document.getElementById("listaReservasPanel");
+  const listaCompleta = document.getElementById("listaReservas");
 
-  if (!lista) return;
+  if (lista || listaCompleta) {
+    const usuario = localStorage.getItem("usuario");
+    let reservas = [];
+    try {
+      reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+    } catch (error) {
+      console.error("Error al cargar reservas:", error);
+      localStorage.removeItem("reservas");
+    }
 
-  const usuario = localStorage.getItem("usuario");
-  const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
-  const reservasUsuario = reservas.filter(reserva => reserva.usuario === usuario);
+    const reservasUsuario = reservas.filter(reserva => reserva.usuario === usuario);
 
-  if (reservasUsuario.length === 0) {
-    lista.innerHTML = "<li>No tenés reservas</li>";
-    return;
+    if (lista) {
+      if (reservasUsuario.length === 0) {
+        lista.innerHTML = "<li>No tenés reservas</li>";
+      } else {
+        lista.innerHTML = "";
+        reservasUsuario.forEach(reserva => {
+          const li = document.createElement("li");
+          li.textContent = `${reserva.libro} - ${reserva.estado}`;
+          lista.appendChild(li);
+        });
+      }
+    }
+
+    if (listaCompleta) {
+      if (reservasUsuario.length === 0) {
+        listaCompleta.innerHTML = "<p>No tenés reservas aún.</p>";
+      } else {
+        listaCompleta.innerHTML = "";
+        reservasUsuario.forEach(reserva => {
+          const div = document.createElement("div");
+          div.classList.add("reserva");
+
+          div.innerHTML = `
+            <h3>${reserva.libro}</h3>
+            <p>Autor: ${reserva.autor}</p>
+            <p>Fecha: ${reserva.fecha}</p>
+            <p>Estado: ${reserva.estado}</p>
+            <button class="cancelar-btn">Cancelar</button>
+          `;
+
+          const boton = div.querySelector(".cancelar-btn");
+          boton.addEventListener("click", function () {
+            const indiceGlobal = reservas.findIndex(r =>
+              r.usuario === reserva.usuario &&
+              r.libro === reserva.libro &&
+              r.autor === reserva.autor &&
+              r.fecha === reserva.fecha
+            );
+
+            if (indiceGlobal > -1) {
+              reservas.splice(indiceGlobal, 1);
+              localStorage.setItem("reservas", JSON.stringify(reservas));
+              location.reload();
+            }
+          });
+
+          listaCompleta.appendChild(div);
+        });
+      }
+    }
   }
-
-  reservasUsuario.forEach(reserva => {
-    const li = document.createElement("li");
-    li.textContent = `${reserva.libro} - ${reserva.estado}`;
-    lista.appendChild(li);
-  });
-
-});
-
-document.addEventListener("DOMContentLoaded", function () {
 
   const bienvenida = document.getElementById("bienvenida");
   const logoutBtn = document.getElementById("logoutBtn");
@@ -296,17 +340,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-
   const usuario = localStorage.getItem("usuario");
 
   // 🔒 Bloquear acceso si no está logueado
-  if (!usuario && (
-    window.location.pathname.includes("panel_alumno.html") ||
-    window.location.pathname.includes("mis_reservas.html")
-  )) {
+  if (!usuario && window.location.pathname.includes("panel_alumno.html")) {
     window.location.href = "login.html";
   }
 

@@ -144,6 +144,15 @@ body {
 }
 
 /* ================= LOGIN PAGE ================= */
+body.login-page,
+body.panel-page,
+body.catalogo-page,
+body.mis-reservas-page {
+  min-height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url("http://www.comunidadbaratz.com/wp-content/uploads/Todas-las-bibliotecas-son-bellas-por-el-servicio-que-ofrecen-a-sus-comunidades.jpg") center/cover no-repeat;
+  color: #fff;
+}
+
 .login-container {
   background: rgba(255, 255, 255, 0.95);
   width: 350px;
@@ -152,6 +161,40 @@ body {
   margin: 120px auto;
   text-align: center;
   box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+body.panel-page .panel-container,
+body.catalogo-page .contenedor,
+body.mis-reservas-page .mis-reservas-container {
+  background: rgba(255, 255, 255, 0.92);
+  color: #333; /* Texto negro para legibilidad */
+}
+
+body.login-page .login-container,
+body.panel-page .panel-container,
+body.catalogo-page .contenedor,
+body.mis-reservas-page .mis-reservas-container {
+  color: #333; /* Texto negro para legibilidad */
+}
+
+body.login-page .login-container input,
+body.login-page .login-container button {
+  color: #333; /* Texto negro en inputs y botón */
+  background-color: #fff; /* Fondo blanco */
+  border: 1px solid #ccc;
+}
+
+body.login-page .login-container input::placeholder {
+  color: #666; /* Placeholder gris */
+}
+
+body.login-page .login-container button {
+  background-color: #f4b400; /* Color original del botón */
+  color: #000; /* Texto negro en botón */
+}
+
+body.login-page .login-container button:hover {
+  background-color: #e0a800;
 }
 
 /* ================= CONTENEDORES ================= */
@@ -180,6 +223,7 @@ body {
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  color: #333; /* Texto negro en las tarjetas */
 }
 
 /* ================= BOTONES ================= */
