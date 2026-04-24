@@ -33,41 +33,44 @@ scrollLinks.forEach(link => {
   });
 });
 
-const preguntas = document.querySelectorAll(".faq-question");
+document.addEventListener("DOMContentLoaded", () => {
 
-if (preguntas.length > 0) {
-  preguntas.forEach(pregunta => {
-    pregunta.addEventListener("click", () => {
+  const preguntas = document.querySelectorAll(".faq-question");
 
-      const respuestaActual = pregunta.nextElementSibling;
+  if (preguntas.length > 0) {
+    preguntas.forEach(pregunta => {
+      pregunta.addEventListener("click", () => {
 
-      // cerrar todas
-      document.querySelectorAll(".faq-answer").forEach(respuesta => {
-        if (respuesta !== respuestaActual) {
-          respuesta.style.maxHeight = null;
+        const respuestaActual = pregunta.nextElementSibling;
+
+        // cerrar todas
+        document.querySelectorAll(".faq-answer").forEach(respuesta => {
+          if (respuesta !== respuestaActual) {
+            respuesta.style.maxHeight = null;
+          }
+        });
+
+        document.querySelectorAll(".faq-question").forEach(btn => {
+          if (btn !== pregunta) {
+            btn.classList.remove("active");
+          }
+        });
+
+        // toggle actual
+        if (respuestaActual.style.maxHeight) {
+          respuestaActual.style.maxHeight = null;
+          pregunta.classList.remove("active");
+        } else {
+          respuestaActual.style.maxHeight = respuestaActual.scrollHeight + "px";
+          pregunta.classList.add("active");
         }
+
       });
-
-      document.querySelectorAll(".faq-question").forEach(btn => {
-        if (btn !== pregunta) {
-          btn.classList.remove("active");
-        }
-      });
-
-      // toggle actual
-      if (respuestaActual.style.maxHeight) {
-        respuestaActual.style.maxHeight = null;
-        pregunta.classList.remove("active");
-      } else {
-        respuestaActual.style.maxHeight = respuestaActual.scrollHeight + "px";
-        pregunta.classList.add("active");
-      }
-
     });
-  });
-}
+  }
 
-=======
+});
+
 // --- Lógica del login (solo si existe el formulario) ---
 const loginForm = document.getElementById("loginForm");
 
