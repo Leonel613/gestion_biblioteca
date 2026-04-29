@@ -1,138 +1,91 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f9eed6;
-}
-
-/* NAVBAR */
-.navbar {
-  background-color: #270a5f;
-  color: white;
-  padding: 1.5rem 3rem;
-}
-
-.navbar nav {
+/* CONTENEDOR DERECHO */
+.navbar-right {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  flex-wrap: wrap;
+  gap: 15px;
 }
 
-/* TITULO PRINCIPAL */
-.titulo-panel {
-  text-align: center;
-  font-size: 3rem;
-  margin-top: 2rem;
+/* FECHA */
+#fechaHora {
+  font-size: 0.95rem;
+  color: #ecf0f1;
 }
 
-/* HAMBURGUESA */
-.hamburger {
-  font-size: 2rem;
-  cursor: pointer;
-  margin: 1rem;
-}
-
-/* SIDEBAR */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 220px;
-  height: 100%;
-  background-color: #0f172a;
-  padding-top: 80px;
-  transition: transform 0.3s ease;
-}
-
-/* OCULTO (corregido) */
-.hidden {
-  transform: translateX(-100%);
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.menu-item {
-  padding: 1rem;
-  color: white;
+/* PERFIL */
+.perfil {
+  position: relative;
   cursor: pointer;
 }
 
-.menu-item:hover {
-  background-color: #1e3a8a;
+.icono {
+  font-size: 1.4rem;
+  color: #bdc3c7; /* grisito */
 }
 
-.menu-item.active {
-  background-color: #2563eb;
-}
-
-/* CONTENIDO */
-.content {
-  padding: 2rem;
-}
-
-/* SECCIONES */
-.section {
+/* MENU DESPLEGABLE */
+.menu-perfil {
   display: none;
+  position: absolute;
+  right: 0;
+  top: 35px;
+  background: #FFF9F4;
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 150px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-.section.active {
+/* BOTONES MENU */
+.menu-perfil button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: #FFF9F4;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* HOVER CELESTE */
+.menu-perfil button:hover {
+  background: #3498db;
+  color: white;
+}
+
+/* ACTIVAR MENU */
+.menu-perfil.activo {
   display: block;
 }
-
-/* TITULOS (CORREGIDO A IZQUIERDA) */
-.section h1 {
-  text-align: left;
-  margin-bottom: 1rem;
+body {
+  margin: 0;
+  padding-top: 80px; /* altura del navbar */
 }
 
-/* SUB BOTONES (CORREGIDO A IZQUIERDA) */
-.sub-actions {
-  text-align: left;
-  margin-bottom: 1rem;
+/* CONTENEDOR */
+.panel-opciones {
+  display: flex;
+  justify-content: center;
+  gap: 40px; /* separación entre tarjetas */
+  margin-top: 40px;
 }
 
-.sub-actions a {
-  margin-right: 1rem;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-/* TABLAS */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 2rem;
-}
-
-th, td {
-  border: 1px solid #ccc;
-  padding: 0.5rem;
+/* TARJETAS */
+.card-opcion {
+  background: #3498db;
+  color: white;
+  padding: 25px 20px;
+  border-radius: 12px;
+  width: 180px;
   text-align: center;
-}
-
-/* BOTONES */
-.btn-aprobar {
-  background-color: green;
-  color: white;
-  border: none;
-  padding: 5px;
+  font-weight: bold;
   cursor: pointer;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
 }
 
-.btn-rechazar {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 5px;
-  cursor: pointer;
+/* HOVER */
+.card-opcion:hover {
+  background: #2980b9;
+  transform: translateY(-5px);
 }
 
-/* SUBTITULO */
-.subtitulo {
-  margin-top: 2rem;
-  text-align: left;
-}

@@ -1,43 +1,34 @@
-const hamburger = document.getElementById("hamburger");
-const sidebar = document.getElementById("sidebar");
-const menuItems = document.querySelectorAll(".menu-item");
-const sections = document.querySelectorAll(".section");
+if (email === "admin@cudi.com") {
+  window.location.href = "panel_bibliotecario.html";
+} else {
+  window.location.href = "panel_alumno.html";
+}
+// FECHA FORMATO: Martes 28, Abril 21:09
+document.addEventListener("DOMContentLoaded", () => {
 
-// abrir/cerrar menú
-hamburger.addEventListener("click", (e) => {
-  e.stopPropagation(); // evita conflicto con click global
-  sidebar.classList.toggle("hidden");
-});
+  function actualizarFecha() {
+    const ahora = new Date();
 
-// cambiar secciones
-menuItems.forEach(item => {
-  item.addEventListener("click", () => {
+    const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                   "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-    // activar botón
-    menuItems.forEach(i => i.classList.remove("active"));
-    item.classList.add("active");
+    const dia = dias[ahora.getDay()];
+    const numero = ahora.getDate();
+    const mes = meses[ahora.getMonth()];
 
-    // mostrar sección
-    const target = item.getAttribute("data-section");
+    const horas = String(ahora.getHours()).padStart(2, "0");
+    const minutos = String(ahora.getMinutes()).padStart(2, "0");
 
-    sections.forEach(sec => {
-      sec.classList.remove("active");
-      if (sec.id === target) {
-        sec.classList.add("active");
-      }
-    });
+    const formato = `${dia} ${numero}, ${mes} ${horas}:${minutos}`;
 
-    // cerrar menú al seleccionar (opcional, pero queda pro)
-    sidebar.classList.add("hidden");
-  });
-});
-
-// cerrar si clickeás afuera
-document.addEventListener("click", (e) => {
-  if (
-    !sidebar.contains(e.target) &&
-    !hamburger.contains(e.target)
-  ) {
-    sidebar.classList.add("hidden");
+    const span = document.getElementById("fechaHora");
+    if (span) {
+      span.textContent = formato;
+    }
   }
+
+  setInterval(actualizarFecha, 1000);
+  actualizarFecha();
+
 });
