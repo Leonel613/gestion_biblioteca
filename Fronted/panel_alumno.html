@@ -5,14 +5,14 @@
     <title>Panel Alumno</title>
     <link rel="stylesheet" href="diseño.css">
 </head>
-<body>
+<body class="panel-page">
     <header class="navbar">
   <h2 class="logo">Biblioteca CUDI</h2>
   <nav>
     <a href="index.html">Inicio</a>
     <a href="panel_alumno.html">Panel</a>
     <a href="catalogo.html">Catálogo</a>
-    <a href="mis_reservas.html">Mis reservas</a>
+    <a href="#misReservas">Mis reservas</a>
   </nav>
 </header>
 <div class="panel-container">
@@ -25,11 +25,7 @@
       <div class="card">
         <h2>Resumen de Reservas</h2>
         <ul id="listaReservasPanel"></ul>
-        <a href="mis_reservas.html" class="boton">Ver todas</a>
-      </div>
-
-      <div class="card">
-        <h2>Acciones rápidas</h2>
+        <a href="#misReservas" class="boton">Ver todas</a>
         <p>Accede al catálogo y gestiona tus préstamos y reservas sin perder tiempo.</p>
         <a href="catalogo.html" class="boton">Ir al catálogo</a>
       </div>
@@ -39,6 +35,11 @@
         <ul id="misPrestamos"></ul>
       </div>
     </div>
+
+    <section id="misReservas" class="mis-reservas-container">
+      <h2>Mis Reservas</h2>
+      <div id="listaReservas"></div>
+    </section>
 
 </div>
 
