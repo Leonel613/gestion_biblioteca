@@ -78,7 +78,7 @@ if (loginForm) {
   console.log("Formulario detectado");
 
   loginForm.addEventListener("submit", function(e) {
-    e.preventDefault();
+    e.preventDefault(); // 🚫 evita recarga loca
     console.log("Submit funcionando");
 
     const email = document.getElementById("email").value;
@@ -89,36 +89,24 @@ if (loginForm) {
       return;
     }
 
-    // Validar formato de email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      alert("Por favor ingrese un email válido.");
-      return;
-    }
-
     // 🔹 LOGIN BIBLIOTECARIO
     if (email === "admin@cudi.com" && password === "1234") {
 
       localStorage.setItem("rol", "bibliotecario");
       localStorage.setItem("usuario", email);
 
-      alert("Panel bibliotecario en desarrollo por tu compañera. Redirigiendo al inicio.");
-      window.location.href = "index.html";
-
+      window.location.href = "panel_bibliotecario.html";
     } 
     // 🔹 LOGIN ALUMNO
     else if (email === "alumno@cudi.com" && password === "1234") {
 
-      console.log("Login alumno exitoso");
       localStorage.setItem("rol", "alumno");
       localStorage.setItem("usuario", email);
 
       window.location.href = "panel_alumno.html";
-
     } 
-    // ❌ ERROR
     else {
-      alert("Correo o contraseña incorrectos.");
+      alert("❌ Usuario o contraseña incorrectos");
     }
 
   });
