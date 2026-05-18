@@ -38,6 +38,23 @@
 
     <section id="misReservas" class="mis-reservas-container">
       <h2>Mis Reservas</h2>
+
+      <div class="filtro-fecha">
+        <div class="fecha-group">
+          <label for="fechaDesde">Desde</label>
+          <input type="date" id="fechaDesde" aria-label="Filtrar desde" />
+        </div>
+        <div class="fecha-group">
+          <label for="fechaHasta">Hasta</label>
+          <input type="date" id="fechaHasta" aria-label="Filtrar hasta" />
+        </div>
+        <div class="fecha-actions">
+          <button id="aplicarFiltro" class="boton">Aplicar filtro</button>
+          <button id="limpiarFiltro" class="boton secondary">Limpiar</button>
+        </div>
+        <p id="mensajeFecha" class="fecha-mensaje"></p>
+      </div>
+
       <div id="listaReservas"></div>
     </section>
 

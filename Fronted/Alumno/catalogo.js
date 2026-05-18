@@ -11,18 +11,32 @@ document.addEventListener("DOMContentLoaded", function () {
   const contenedor = document.getElementById("listaLibros");
   const buscador = document.getElementById("buscador");
 
+  function esFechaValida(valor) {
+    if (!valor) return false;
+    const fechaSeleccionada = new Date(valor);
+    fechaSeleccionada.setHours(0, 0, 0, 0);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    return fechaSeleccionada >= hoy;
+  }
+
   function mostrarLibros(lista) {
     contenedor.innerHTML = "";
 
     lista.forEach(libro => {
       const div = document.createElement("div");
       div.classList.add("card", "libro");
-
       div.innerHTML = `
         <h3>${libro.titulo}</h3>
         <p>Autor: ${libro.autor}</p>
         <p>Estado: ${libro.disponible ? "Disponible" : "No disponible"}</p>
-        ${libro.disponible ? `<button class="boton-prestamo">Reservar libro</button>` : `<span class="no-disponible">No disponible</span>`}
+        ${libro.disponible ? `
+          <div class="fecha-card">
+            <label>Fecha de reserva</label>
+            <input type="date" class="fecha-reserva" min="${new Date().toISOString().split('T')[0]}" />
+          </div>
+          <button class="boton-prestamo">Reservar libro</button>
+        ` : `<span class="no-disponible">No disponible</span>`}
       `;
 
       contenedor.appendChild(div);
@@ -40,6 +54,19 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
           }
 
+          const fechaInput = div.querySelector(".fecha-reserva");
+          const fechaReserva = fechaInput ? fechaInput.value : "";
+
+          if (!fechaReserva) {
+            alert("Seleccioná una fecha de reserva para este libro antes de continuar.");
+            return;
+          }
+
+          if (!esFechaValida(fechaReserva)) {
+            alert("La fecha de reserva no puede ser anterior a hoy.");
+            return;
+          }
+
           let reservas = [];
           try {
             reservas = JSON.parse(localStorage.getItem("reservas")) || [];
@@ -52,13 +79,17 @@ document.addEventListener("DOMContentLoaded", function () {
             usuario: usuario,
             libro: libro.titulo,
             autor: libro.autor,
-            fecha: new Date().toLocaleDateString(),
+            fecha: fechaReserva,
             estado: "Pendiente"
           };
 
           reservas.push(nuevaReserva);
 
           localStorage.setItem("reservas", JSON.stringify(reservas));
+
+          // Marcar el libro como no disponible en la UI y re-renderizar
+          libro.disponible = false;
+          mostrarLibros(libros);
 
           alert("Reserva guardada para: " + libro.titulo);
 

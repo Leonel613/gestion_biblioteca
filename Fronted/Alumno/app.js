@@ -279,42 +279,104 @@ console.log("JS funcionando en panel alumno");
       }
     }
 
-    if (listaCompleta) {
-      if (reservasUsuario.length === 0) {
+    function renderizarReservas(reservasMostrar) {
+      if (!listaCompleta) return;
+
+      if (reservasMostrar.length === 0) {
         listaCompleta.innerHTML = "<p>No tenés reservas aún.</p>";
-      } else {
-        listaCompleta.innerHTML = "";
-        reservasUsuario.forEach(reserva => {
-          const div = document.createElement("div");
-          div.classList.add("reserva");
+        return;
+      }
 
-          div.innerHTML = `
-            <h3>${reserva.libro}</h3>
-            <p>Autor: ${reserva.autor}</p>
-            <p>Fecha: ${reserva.fecha}</p>
-            <p>Estado: ${reserva.estado}</p>
-            <button class="cancelar-btn">Cancelar</button>
-          `;
+      listaCompleta.innerHTML = "";
+      reservasMostrar.forEach(reserva => {
+        const div = document.createElement("div");
+        div.classList.add("reserva");
 
-          const boton = div.querySelector(".cancelar-btn");
-          boton.addEventListener("click", function () {
-            const indiceGlobal = reservas.findIndex(r =>
-              r.usuario === reserva.usuario &&
-              r.libro === reserva.libro &&
-              r.autor === reserva.autor &&
-              r.fecha === reserva.fecha
-            );
+        div.innerHTML = `
+          <h3>${reserva.libro}</h3>
+          <p>Autor: ${reserva.autor}</p>
+          <p>Fecha: ${reserva.fecha}</p>
+          <p>Estado: ${reserva.estado}</p>
+          <button class="cancelar-btn">Cancelar</button>
+        `;
 
-            if (indiceGlobal > -1) {
-              reservas.splice(indiceGlobal, 1);
-              localStorage.setItem("reservas", JSON.stringify(reservas));
-              location.reload();
-            }
-          });
+        const boton = div.querySelector(".cancelar-btn");
+        boton.addEventListener("click", function () {
+          const indiceGlobal = reservas.findIndex(r =>
+            r.usuario === reserva.usuario &&
+            r.libro === reserva.libro &&
+            r.autor === reserva.autor &&
+            r.fecha === reserva.fecha
+          );
 
-          listaCompleta.appendChild(div);
+          if (indiceGlobal > -1) {
+            reservas.splice(indiceGlobal, 1);
+            localStorage.setItem("reservas", JSON.stringify(reservas));
+            location.reload();
+          }
+        });
+
+        listaCompleta.appendChild(div);
+      });
+    }
+
+    const fechaDesde = document.getElementById("fechaDesde");
+    const fechaHasta = document.getElementById("fechaHasta");
+    const aplicarFiltro = document.getElementById("aplicarFiltro");
+    const limpiarFiltro = document.getElementById("limpiarFiltro");
+    const mensajeFecha = document.getElementById("mensajeFecha");
+
+    function parsearFecha(valor) {
+      if (!valor) return null;
+      const fecha = new Date(valor);
+      fecha.setHours(0, 0, 0, 0);
+      return fecha;
+    }
+
+    function aplicarFiltroFechas() {
+      mensajeFecha.textContent = "";
+      const desde = parsearFecha(fechaDesde?.value);
+      const hasta = parsearFecha(fechaHasta?.value);
+
+      if (desde && hasta && desde > hasta) {
+        mensajeFecha.textContent = "La fecha 'Desde' no puede ser posterior a la fecha 'Hasta'.";
+        return;
+      }
+
+      let reservasFiltradas = reservasUsuario.slice();
+
+      if (desde) {
+        reservasFiltradas = reservasFiltradas.filter(reserva => {
+          const fechaReserva = parsearFecha(reserva.fecha);
+          return fechaReserva && fechaReserva >= desde;
         });
       }
+
+      if (hasta) {
+        reservasFiltradas = reservasFiltradas.filter(reserva => {
+          const fechaReserva = parsearFecha(reserva.fecha);
+          return fechaReserva && fechaReserva <= hasta;
+        });
+      }
+
+      renderizarReservas(reservasFiltradas);
+    }
+
+    if (aplicarFiltro) {
+      aplicarFiltro.addEventListener("click", aplicarFiltroFechas);
+    }
+
+    if (limpiarFiltro) {
+      limpiarFiltro.addEventListener("click", function () {
+        if (fechaDesde) fechaDesde.value = "";
+        if (fechaHasta) fechaHasta.value = "";
+        mensajeFecha.textContent = "";
+        renderizarReservas(reservasUsuario);
+      });
+    }
+
+    if (listaCompleta) {
+      renderizarReservas(reservasUsuario);
     }
   }
 
