@@ -1,0 +1,202 @@
+[
+  {
+    "nombre": "Juan Pérez",
+    "email": "juan.perez@cudi.com",
+    "dni": "40123456",
+    "telefono": "1122334455",
+    "carrera": "Ingeniería en Sistemas",
+    "estado": "activo"
+  },
+  {
+    "nombre": "María González",
+    "email": "maria.gonzalez@cudi.com",
+    "dni": "39876543",
+    "telefono": "1167894321",
+    "carrera": "Administración",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Lucas Fernández",
+    "email": "lucas.fernandez@cudi.com",
+    "dni": "41222333",
+    "telefono": "1176543210",
+    "carrera": "Contabilidad",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Sofía Martínez",
+    "email": "sofia.martinez@cudi.com",
+    "dni": "42333444",
+    "telefono": "1145678901",
+    "carrera": "Derecho",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Tomás Rodríguez",
+    "email": "tomas.rodriguez@cudi.com",
+    "dni": "39555111",
+    "telefono": "1133445566",
+    "carrera": "Ingeniería Civil",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Valentina López",
+    "email": "valentina.lopez@cudi.com",
+    "dni": "41777888",
+    "telefono": "1199887766",
+    "carrera": "Psicología",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Mateo Gómez",
+    "email": "mateo.gomez@cudi.com",
+    "dni": "40222999",
+    "telefono": "1177889900",
+    "carrera": "Medicina",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Camila Torres",
+    "email": "camila.torres@cudi.com",
+    "dni": "43666777",
+    "telefono": "1155778899",
+    "carrera": "Arquitectura",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Benjamín Ruiz",
+    "email": "benjamin.ruiz@cudi.com",
+    "dni": "40888999",
+    "telefono": "1122113344",
+    "carrera": "Diseño Gráfico",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Emma Castro",
+    "email": "emma.castro@cudi.com",
+    "dni": "42111555",
+    "telefono": "1166332211",
+    "carrera": "Ingeniería Industrial",
+    "estado": "activo"
+  },
+{
+  "nombre": "Agustín Herrera",
+  "email": "agustin.herrera@cudi.com",
+  "dni": "40444555",
+  "telefono": "1155443322",
+  "carrera": "Ingeniería Mecánica",
+  "estado": "activo"
+},
+{
+  "nombre": "Julieta Navarro",
+  "email": "julieta.navarro@cudi.com",
+  "dni": "41888777",
+  "telefono": "1166223344",
+  "carrera": "Marketing",
+  "estado": "activo"
+},
+{
+  "nombre": "Franco Medina",
+  "email": "franco.medina@cudi.com",
+  "dni": "40999111",
+  "telefono": "1133557799",
+  "carrera": "Derecho",
+  "estado": "activo"
+},
+{
+  "nombre": "Milagros Vega",
+  "email": "milagros.vega@cudi.com",
+  "dni": "42777111",
+  "telefono": "1177112233",
+  "carrera": "Psicología",
+  "estado": "activo"
+},
+{
+  "nombre": "Thiago Silva",
+  "email": "thiago.silva@cudi.com",
+  "dni": "41122999",
+  "telefono": "1144556677",
+  "carrera": "Ingeniería en Sistemas",
+  "estado": "activo"
+},
+{
+  "nombre": "Abril Morales",
+  "email": "abril.morales@cudi.com",
+  "dni": "43333444",
+  "telefono": "1199008877",
+  "carrera": "Arquitectura",
+  "estado": "activo"
+},
+{
+  "nombre": "Joaquín Rojas",
+  "email": "joaquin.rojas@cudi.com",
+  "dni": "40666111",
+  "telefono": "1122774455",
+  "carrera": "Contabilidad",
+  "estado": "activo"
+},
+{
+  "nombre": "Renata Molina",
+  "email": "renata.molina@cudi.com",
+  "dni": "42555999",
+  "telefono": "1188665544",
+  "carrera": "Diseño Gráfico",
+  "estado": "activo"
+},
+{
+  "nombre": "Facundo Ortiz",
+  "email": "facundo.ortiz@cudi.com",
+  "dni": "40333777",
+  "telefono": "1155993377",
+  "carrera": "Ingeniería Civil",
+  "estado": "activo"
+},
+{
+  "nombre": "Catalina Ramos",
+  "email": "catalina.ramos@cudi.com",
+  "dni": "43111888",
+  "telefono": "1177442211",
+  "carrera": "Medicina",
+  "estado": "activo"
+},
+{
+  "nombre": "Ignacio Cabrera",
+  "email": "ignacio.cabrera@cudi.com",
+  "dni": "40011222",
+  "telefono": "1144335566",
+  "carrera": "Historia",
+  "estado": "activo"
+},
+{
+  "nombre": "Florencia Acosta",
+  "email": "florencia.acosta@cudi.com",
+  "dni": "42999444",
+  "telefono": "1199556677",
+  "carrera": "Literatura",
+  "estado": "activo"
+},
+{
+  "nombre": "Bruno Paredes",
+  "email": "bruno.paredes@cudi.com",
+  "dni": "40777333",
+  "telefono": "1166112233",
+  "carrera": "Filosofía",
+  "estado": "activo"
+},
+{
+  "nombre": "Lucía Benítez",
+  "email": "lucia.benitez@cudi.com",
+  "dni": "43444555",
+  "telefono": "1133442211",
+  "carrera": "Biología",
+  "estado": "activo"
+},
+{
+  "nombre": "Santiago Ibarra",
+  "email": "santiago.ibarra@cudi.com",
+  "dni": "40555123",
+  "telefono": "1155779911",
+  "carrera": "Matemática",
+  "estado": "activo"
+}
+]
