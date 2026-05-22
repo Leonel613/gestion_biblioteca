@@ -1,0 +1,82 @@
+[
+  {
+    "nombre": "Juan Pérez",
+    "email": "juan.perez@cudi.com",
+    "dni": "40123456",
+    "telefono": "1122334455",
+    "carrera": "Ingeniería en Sistemas",
+    "estado": "activo"
+  },
+  {
+    "nombre": "María González",
+    "email": "maria.gonzalez@cudi.com",
+    "dni": "39876543",
+    "telefono": "1167894321",
+    "carrera": "Administración",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Lucas Fernández",
+    "email": "lucas.fernandez@cudi.com",
+    "dni": "41222333",
+    "telefono": "1176543210",
+    "carrera": "Contabilidad",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Sofía Martínez",
+    "email": "sofia.martinez@cudi.com",
+    "dni": "42333444",
+    "telefono": "1145678901",
+    "carrera": "Derecho",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Tomás Rodríguez",
+    "email": "tomas.rodriguez@cudi.com",
+    "dni": "39555111",
+    "telefono": "1133445566",
+    "carrera": "Ingeniería Civil",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Valentina López",
+    "email": "valentina.lopez@cudi.com",
+    "dni": "41777888",
+    "telefono": "1199887766",
+    "carrera": "Psicología",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Mateo Gómez",
+    "email": "mateo.gomez@cudi.com",
+    "dni": "40222999",
+    "telefono": "1177889900",
+    "carrera": "Medicina",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Camila Torres",
+    "email": "camila.torres@cudi.com",
+    "dni": "43666777",
+    "telefono": "1155778899",
+    "carrera": "Arquitectura",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Benjamín Ruiz",
+    "email": "benjamin.ruiz@cudi.com",
+    "dni": "40888999",
+    "telefono": "1122113344",
+    "carrera": "Diseño Gráfico",
+    "estado": "activo"
+  },
+  {
+    "nombre": "Emma Castro",
+    "email": "emma.castro@cudi.com",
+    "dni": "42111555",
+    "telefono": "1166332211",
+    "carrera": "Ingeniería Industrial",
+    "estado": "activo"
+  }
+]
