@@ -330,18 +330,27 @@ console.log("JS funcionando en panel alumno");
       localStorage.removeItem("reservas");
       window.location.href = "login.html";
     });
-  }
-
+    }
+  /* 
   const usuario = localStorage.getItem("usuario");
-
   // 🔒 Bloquear acceso si no está logueado
   if (!usuario && window.location.pathname.includes("panel_alumno.html")) {
     window.location.href = "login.html";
   }
-
   // 🔁 Evitar volver al login si ya está logueado
   if (usuario && window.location.pathname.includes("login.html")) {
     window.location.href = "panel_alumno.html";
   }
+  */
+  const rol = localStorage.getItem("rol");
 
+  if (usuario && window.location.pathname.includes("login.html")) {
+
+    if (rol === "bibliotecario") {
+      window.location.href = "panel_bibliotecario.html";
+    } 
+    else if (rol === "alumno") {
+      window.location.href = "panel_alumno.html";
+    }
+  }
 });
