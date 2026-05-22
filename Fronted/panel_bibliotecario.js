@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // MENU PERFIL
   const perfil = document.getElementById("perfil");
   const menu = document.getElementById("menuPerfil");
+  
 
   if (perfil && menu) {
     perfil.addEventListener("click", () => {
@@ -279,13 +280,19 @@ function crearLibro() {
     }
   });
 
-  // validar letras
-  [titulo, autor, editorial, categoria, proveedor].forEach(campo => {
-    if (!soloLetras.test(campo.value)) {
-      campo.style.border = "2px solid red";
-      valido = false;
-    }
-  });
+  // validar titulo (solo que no esté vacío)
+ if (titulo.value.trim().length < 2) {
+  titulo.style.border = "2px solid red";
+  valido = false;
+ }
+
+// validar resto con solo letras
+[autor, editorial, categoria, proveedor].forEach(campo => {
+  if (!soloLetras.test(campo.value)) {
+    campo.style.border = "2px solid red";
+    valido = false;
+  }
+ });
 
   // validar números
   [anio, edicion, total].forEach(campo => {
@@ -355,6 +362,9 @@ function activarValidacion() {
 }
 
 // 👤 USUARIO
+const soloLetras = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/;
+const usuarios = [];
+
 function mostrarCrearUsuario() {
   document.getElementById("contenidoPanel").innerHTML = `
      <div class="tarjeta tarjeta-formulario">
@@ -362,33 +372,172 @@ function mostrarCrearUsuario() {
 
       <input id="nombre" placeholder="Nombre">
       <input id="apellido" placeholder="Apellido">
-
       <input id="curso" placeholder="Curso">
       <input id="division" placeholder="División">
       <input id="turno" placeholder="Turno">
 
       <input id="email" placeholder="Email">
+      <div id="mensajeSistema"></div>
 
-      <button onclick="crearUsuario()">Crear usuario</button>
+      <button id="btnCrear" onclick="crearUsuario()">Crear usuario</button>
     </div>
   `;
+  activarValidacionEnVivo();
 }
 
 function crearUsuario() {
 
-  const usuario = {
-    nombre: document.getElementById("nombre").value,
-    apellido: document.getElementById("apellido").value,
-    curso: document.getElementById("curso").value,
-    division: document.getElementById("division").value,
-    turno: document.getElementById("turno").value,
-    email: document.getElementById("email").value
-  };
+  let valido = true;
 
-  console.log(usuario); // 👈 para ver en consola
+  const nombre = document.getElementById("nombre");
+  const apellido = document.getElementById("apellido");
+  const turno = document.getElementById("turno");
+  const curso = document.getElementById("curso");
+  const division = document.getElementById("division");
+  const email = document.getElementById("email");
+  const emailValue = email.value.trim().toLowerCase();
 
-  alert("✔ Usuario creado correctamente.");
+  const campos = [nombre, apellido, turno, curso, division, email];
+
+  // 🔄 Reset bordes
+  campos.forEach(c => c.style.border = "1px solid #ccc");
+
+  // ❌ Vacíos
+  campos.forEach(c => {
+    if (c.value.trim() === "") {
+      c.style.border = "2px solid red";
+      valido = false;
+    }
+  });
+
+  // 🔤 Solo letras
+  [nombre, apellido, turno].forEach(c => {
+    if (c.value.trim() !== "" && !soloLetras.test(c.value)) {
+      c.style.border = "2px solid red";
+      valido = false;
+    }
+  });
+
+  // 📧 Email
+  const emailValido = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/; 
+
+  if (emailValue !== "" && !emailValido.test(emailValue)) {
+    email.style.border = "2px solid red";
+    valido = false;
+  }
+
+  // 🛑 cortar
+  console.log("Valido:", valido);
+  if (!valido) {
+    return;
+  }
+
+  // ✅ CREAR USUARIO
+  const nuevoUsuario = {
+  nombre: nombre.value.trim().toLowerCase(),
+  apellido: apellido.value.trim().toLowerCase(),
+  curso: curso.value.trim(),
+  division: division.value.trim(),
+  turno: turno.value.trim().toLowerCase(),
+  email: emailValue
+};
+
+// 🔍 BUSCAR SIMILARES
+const iguales = buscarUsuariosIguales(nuevoUsuario);
+
+// 🚫 SI EXISTEN
+if (iguales.length > 0) {
+  document.getElementById("btnCrear").style.display = "none";
+  document.getElementById("mensajeSistema").innerHTML = `
+    ⚠️ Ya existe un usuario con este nombre y email.<br>
+    ¿Querés recuperar la contraseña?
+    <br><br>
+    <button onclick="cancelarRegistro()">Cancelar</button>
+    <button onclick="recuperarCuenta()">Recuperar cuenta</button>
+  `;
+  return;
 }
+
+// ✅ GUARDAR
+usuarios.push(nuevoUsuario);
+
+console.log(usuarios);
+
+alert("✔ Usuario creado correctamente. Revisá tu email 📩");
+
+// 🧹 limpiar
+campos.forEach(c => c.value = "");
+document.getElementById("mensajeSistema").innerHTML = "";
+}
+
+function cancelarRegistro() {
+  const campos = document.querySelectorAll("#contenidoPanel input");
+  campos.forEach(c => c.value = "");
+
+  document.getElementById("btnCrear").style.display = "";
+  document.getElementById("mensajeSistema").innerHTML = "";
+}
+
+
+function recuperarCuenta() {
+  alert("📩 Enviando recuperación de cuenta (simulado)");
+}
+
+function buscarUsuariosIguales(nuevo) {
+  return usuarios.filter(u =>
+    u.nombre.toLowerCase() === nuevo.nombre.toLowerCase() &&
+    u.apellido.toLowerCase() === nuevo.apellido.toLowerCase() &&
+    u.email === nuevo.email
+  );
+}
+
+
+function activarValidacionEnVivo() {
+
+  const campos = document.querySelectorAll("#contenidoPanel input");
+
+  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  campos.forEach(campo => {
+
+    campo.addEventListener("input", () => {
+
+      let valido = true;
+
+      // vacío
+      if (campo.value.trim() === "") {
+        campo.style.border = "1px solid #ccc";
+        return;
+      }
+
+      // solo letras
+      if (["nombre", "apellido", "turno"].includes(campo.id)) {
+        if (campo.value.trim() !== "" && !soloLetras.test(campo.value)) {
+          valido = false;
+        }
+      }
+
+      // email
+     if (campo.id === "email") {
+       const valor = campo.value.trim();
+
+       if (valor === "") {
+    campo.style.border = "1px solid #ccc";
+    return;
+        }
+
+       if (!emailValido.test(valor)) {
+    valido = false;
+       }
+    }
+
+      // 🎯 CLAVE: esto ahora sí reacciona BIEN
+      campo.style.border = valido ? "2px solid green" : "2px solid red";
+    });
+
+  });
+}
+
 
 // 🔔 NOTIFICACIONES
 function mostrarNotificaciones() {
