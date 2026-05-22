@@ -69,56 +69,117 @@ if (preguntas.length > 0) {
 
 // --- Lógica del login (solo si existe el formulario) ---
 const loginForm = document.getElementById("loginForm");
+const forgotPasswordLink = document.getElementById("forgotPasswordLink");
+const recoverContainer = document.getElementById("recoverContainer");
+const recoverForm = document.getElementById("recoverForm");
+
+function validarEmail(valor) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(valor);
+}
+
+function limpiarErroresLogin() {
+  document.getElementById("emailError").textContent = "";
+  document.getElementById("passwordError").textContent = "";
+  document.getElementById("loginGeneralError").textContent = "";
+}
+
+function limpiarErroresRecupero() {
+  document.getElementById("recoverEmailError").textContent = "";
+  document.getElementById("recoverMessage").textContent = "";
+}
 
 if (loginForm) {
   console.log("Formulario detectado");
 
   loginForm.addEventListener("submit", function(e) {
     e.preventDefault();
-    console.log("Submit funcionando");
+    limpiarErroresLogin();
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    let valid = true;
 
-    if (email === "" || password === "") {
-      alert("Por favor complete todos los campos.");
+    if (!email) {
+      document.getElementById("emailError").textContent = "El correo es obligatorio.";
+      valid = false;
+    } else if (!validarEmail(email)) {
+      document.getElementById("emailError").textContent = "Ingresá un correo válido.";
+      valid = false;
+    }
+
+    if (!password) {
+      document.getElementById("passwordError").textContent = "La contraseña es obligatoria.";
+      valid = false;
+    } else if (password.length < 4) {
+      document.getElementById("passwordError").textContent = "La contraseña debe tener al menos 4 caracteres.";
+      valid = false;
+    }
+
+    if (!valid) {
       return;
     }
 
-    // Validar formato de email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      alert("Por favor ingrese un email válido.");
-      return;
-    }
-
-    // 🔹 LOGIN BIBLIOTECARIO
     if (email === "admin@cudi.com" && password === "1234") {
-
       localStorage.setItem("rol", "bibliotecario");
       localStorage.setItem("usuario", email);
-
       alert("Panel bibliotecario en desarrollo por tu compañera. Redirigiendo al inicio.");
       window.location.href = "index.html";
-
-    } 
-    // 🔹 LOGIN ALUMNO
-    else if (email === "alumno@cudi.com" && password === "1234") {
-
-      console.log("Login alumno exitoso");
-      localStorage.setItem("rol", "alumno");
-      localStorage.setItem("usuario", email);
-
-      window.location.href = "panel_alumno.html";
-
-    } 
-    // ❌ ERROR
-    else {
-      alert("Correo o contraseña incorrectos.");
+      return;
     }
 
+    if (email === "alumno@cudi.com" && password === "1234") {
+      localStorage.setItem("rol", "alumno");
+      localStorage.setItem("usuario", email);
+      window.location.href = "panel_alumno.html";
+      return;
+    }
+
+    document.getElementById("loginGeneralError").textContent = "Correo o contraseña incorrectos.";
   });
-} 
+}
+
+if (forgotPasswordLink) {
+  forgotPasswordLink.addEventListener("click", function() {
+    if (recoverContainer) {
+      recoverContainer.classList.remove("hidden");
+      loginForm.classList.add("hidden");
+      limpiarErroresLogin();
+    }
+  });
+}
+
+if (recoverForm) {
+  recoverForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+    limpiarErroresRecupero();
+
+    const email = document.getElementById("recoverEmail").value.trim();
+    if (!email) {
+      document.getElementById("recoverEmailError").textContent = "El correo es obligatorio.";
+      return;
+    }
+
+    if (!validarEmail(email)) {
+      document.getElementById("recoverEmailError").textContent = "Ingresá un correo válido.";
+      return;
+    }
+
+    document.getElementById("recoverMessage").textContent = "Si el correo existe, recibirás instrucciones de recuperación.";
+    document.getElementById("recoverMessage").style.color = "#1d8348";
+  });
+}
+
+const cancelRecover = document.getElementById("cancelRecover");
+if (cancelRecover) {
+  cancelRecover.addEventListener("click", function() {
+    if (recoverContainer) {
+      recoverContainer.classList.add("hidden");
+      if (loginForm) loginForm.classList.remove("hidden");
+      limpiarErroresRecupero();
+    }
+  });
+}
 
 // --- Crear usuario (solo si existe el formulario) ---
 const crearUsuarioForm = document.getElementById("crearUsuarioForm");

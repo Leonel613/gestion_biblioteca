@@ -129,6 +129,40 @@ body {
   cursor: pointer;
 }
 
+.error-message {
+  display: block;
+  margin-top: 6px;
+  color: #c0392b;
+  font-size: 0.9rem;
+}
+
+.success-message {
+  display: block;
+  margin-top: 10px;
+  color: #1d8348;
+  font-size: 0.95rem;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #174ec5;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font: inherit;
+}
+
+.link-button:hover {
+  opacity: 0.9;
+}
+
+.boton.secondary,
+button.secondary {
+  background-color: #95a5a6;
+  color: white;
+}
+
 /* ================= CONTACTO ================= */
 .contacto {
   background-color: #f9eed6;
@@ -210,6 +244,19 @@ body.login-page .login-container button:hover {
 }
 
 /* ================= GRID CATÁLOGO ================= */
+.catalog-message {
+  margin: 16px 0;
+  padding: 12px 14px;
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+}
+
+.catalog-message:empty {
+  display: none;
+}
+
 #listaLibros {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
