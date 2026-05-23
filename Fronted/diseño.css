@@ -7,10 +7,18 @@
 
 /* ================= BODY ================= */
 body {
-  font-family: Arial, sans-serif;
-  padding-top: 90px;
   margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
 }
+
+.fondo-global {
+  background-image: url("http://www.comunidadbaratz.com/wp-content/uploads/Todas-las-bibliotecas-son-bellas-por-el-servicio-que-ofrecen-a-sus-comunidades.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+} 
 
 /* ================= NAVBAR ================= */
 .navbar {
@@ -31,6 +39,12 @@ body {
 .navbar nav {
   display: flex;
   flex-wrap: wrap;
+}
+
+.navbar nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem; /* separación uniforme entre botones */
 }
 
 .navbar nav a {
@@ -70,6 +84,7 @@ body {
   align-items: center;
 }
 .hero-content {
+  position: relative;
   background: rgba(5, 43, 92, 0.55);
   padding: 2.5rem 3rem;
   border-radius: 12px;
@@ -165,7 +180,7 @@ button.secondary {
 
 /* ================= CONTACTO ================= */
 .contacto {
-  background-color: #f9eed6;
+  background-color: #FFF9F4;
   padding: 3rem 2rem;
   text-align: center;
 }
@@ -235,13 +250,14 @@ body.login-page .login-container button:hover {
 .contenedor,
 .panel-container,
 .mis-reservas-container {
-  background-color: white;
+   background-color: transparent;
   width: 80%;
   max-width: 900px;
   margin: 40px auto;
   padding: 25px;
   border-radius: 10px;
 }
+
 
 /* ================= GRID CATÁLOGO ================= */
 .catalog-message {

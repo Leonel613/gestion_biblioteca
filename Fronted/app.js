@@ -33,39 +33,43 @@ scrollLinks.forEach(link => {
   });
 });
 
-const preguntas = document.querySelectorAll(".faq-question");
+document.addEventListener("DOMContentLoaded", () => {
 
-if (preguntas.length > 0) {
-  preguntas.forEach(pregunta => {
-    pregunta.addEventListener("click", () => {
+  const preguntas = document.querySelectorAll(".faq-question");
 
-      const respuestaActual = pregunta.nextElementSibling;
+  if (preguntas.length > 0) {
+    preguntas.forEach(pregunta => {
+      pregunta.addEventListener("click", () => {
 
-      // cerrar todas
-      document.querySelectorAll(".faq-answer").forEach(respuesta => {
-        if (respuesta !== respuestaActual) {
-          respuesta.style.maxHeight = null;
+        const respuestaActual = pregunta.nextElementSibling;
+
+        // cerrar todas
+        document.querySelectorAll(".faq-answer").forEach(respuesta => {
+          if (respuesta !== respuestaActual) {
+            respuesta.style.maxHeight = null;
+          }
+        });
+
+        document.querySelectorAll(".faq-question").forEach(btn => {
+          if (btn !== pregunta) {
+            btn.classList.remove("active");
+          }
+        });
+
+        // toggle actual
+        if (respuestaActual.style.maxHeight) {
+          respuestaActual.style.maxHeight = null;
+          pregunta.classList.remove("active");
+        } else {
+          respuestaActual.style.maxHeight = respuestaActual.scrollHeight + "px";
+          pregunta.classList.add("active");
         }
+
       });
-
-      document.querySelectorAll(".faq-question").forEach(btn => {
-        if (btn !== pregunta) {
-          btn.classList.remove("active");
-        }
-      });
-
-      // toggle actual
-      if (respuestaActual.style.maxHeight) {
-        respuestaActual.style.maxHeight = null;
-        pregunta.classList.remove("active");
-      } else {
-        respuestaActual.style.maxHeight = respuestaActual.scrollHeight + "px";
-        pregunta.classList.add("active");
-      }
-
     });
-  });
-}
+  }
+
+});
 
 // --- Lógica del login (solo si existe el formulario) ---
 const loginForm = document.getElementById("loginForm");
@@ -93,8 +97,11 @@ if (loginForm) {
   console.log("Formulario detectado");
 
   loginForm.addEventListener("submit", function(e) {
+
     e.preventDefault();
     limpiarErroresLogin();
+
+
 
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
@@ -120,12 +127,28 @@ if (loginForm) {
       return;
     }
 
+
+
+    // 🔹 LOGIN BIBLIOTECARIO
+
     if (email === "admin@cudi.com" && password === "1234") {
       localStorage.setItem("rol", "bibliotecario");
       localStorage.setItem("usuario", email);
-      alert("Panel bibliotecario en desarrollo por tu compañera. Redirigiendo al inicio.");
-      window.location.href = "index.html";
-      return;
+
+
+      window.location.href = "panel_bibliotecario.html";
+    } 
+    // 🔹 LOGIN ALUMNO
+    else if (email === "alumno@cudi.com" && password === "1234") {
+
+      localStorage.setItem("rol", "alumno");
+      localStorage.setItem("usuario", email);
+
+      window.location.href = "panel_alumno.html";
+    } 
+    else {
+      alert("❌ Usuario o contraseña incorrectos");
+
     }
 
     if (email === "alumno@cudi.com" && password === "1234") {
@@ -461,18 +484,27 @@ console.log("JS funcionando en panel alumno");
       localStorage.removeItem("reservas");
       window.location.href = "login.html";
     });
-  }
-
+    }
+  /* 
   const usuario = localStorage.getItem("usuario");
-
   // 🔒 Bloquear acceso si no está logueado
   if (!usuario && window.location.pathname.includes("panel_alumno.html")) {
     window.location.href = "login.html";
   }
-
   // 🔁 Evitar volver al login si ya está logueado
   if (usuario && window.location.pathname.includes("login.html")) {
     window.location.href = "panel_alumno.html";
   }
+  */
+  const rol = localStorage.getItem("rol");
 
+  if (usuario && window.location.pathname.includes("login.html")) {
+
+    if (rol === "bibliotecario") {
+      window.location.href = "panel_bibliotecario.html";
+    } 
+    else if (rol === "alumno") {
+      window.location.href = "panel_alumno.html";
+    }
+  }
 });

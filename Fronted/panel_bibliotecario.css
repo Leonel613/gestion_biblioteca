@@ -1,0 +1,382 @@
+/* FONDO */
+body {
+  margin: 0;
+  padding-top: 80px;
+  background-image: url("http://www.comunidadbaratz.com/wp-content/uploads/Todas-las-bibliotecas-son-bellas-por-el-servicio-que-ofrecen-a-sus-comunidades.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; /* evita duplicado */
+  background-attachment: fixed; /* queda fijo */
+}
+
+/* PANEL */
+.panel-bibliotecario {
+  text-align: center;
+  color: white;
+}
+/* titulo */
+.panel-bibliotecario h1 {
+  margin-top: 20px; /* MÁS ARRIBA */
+  font-size: 2rem; /* MÁS CHICO */
+  font-weight: bold;
+  color: #333;
+
+  background: white;
+  display: inline-block;
+  padding: 10px 25px;
+  border-radius: 10px;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+/* NAVBAR RIGHT */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* FECHA */
+#fechaHora {
+  font-size: 0.95rem;
+  color: #ecf0f1;
+}
+
+/* PERFIL */
+.perfil {
+  position: relative;
+  cursor: pointer;
+}
+
+.icono {
+  color: #bdc3c7;
+}
+
+/* MENU */
+.menu-perfil {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 35px;
+  background: #FFF9F4;
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 150px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.menu-perfil button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: #FFF9F4;
+  cursor: pointer;
+  text-align: left;
+}
+
+.menu-perfil button:hover {
+  background: #3498db;
+  color: white;
+}
+
+.menu-perfil.activo {
+  display: block;
+}
+
+/* BOTON INICIO */
+.btn-inicio {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btn-inicio:hover {
+  text-decoration: underline;
+}
+
+/* CONTENEDOR BOTONES */
+.panel-opciones {
+  display: flex;
+  justify-content: center;
+  gap: 30px; 
+  margin-top: 25px; 
+}
+
+/* TARJETAS (MAS LARGAS) */
+.card-opcion {
+  background: #f1f2f3;
+  color : #333;
+  padding: 20px 40px; /* MÁS ALARGADOS (horizontal) */
+  border-radius: 12px;
+  width: 260px; /* MÁS ANCHO */
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
+}
+
+.card-opcion:hover {
+  background: #2980b9;
+  transform: translateY(-5px);
+}
+
+/* CONTENIDO DINAMICO */
+ .contenido-panel {
+  margin: 40px auto;
+  width: 95%;
+  max-width: 1400px;
+}
+
+.tarjeta {
+  background: white;
+  color: rgb(22, 22, 22);
+  padding: 25px;
+  border-radius: 12px;
+}
+
+.tarjeta-formulario {
+  max-width: 500px;
+  margin: 40px auto;
+}
+.tarjeta-formulario button {
+  margin-top: 25px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 8px;
+}
+.tarjeta-formulario button {
+  transition: 0.2s;
+}
+
+.tarjeta-formulario button:hover {
+  transform: scale(1.03);
+}
+
+/* CONTENEDOR TABLA SCROLL */
+.tabla-contenedor {
+  overflow-x: auto;
+}
+
+/* TABLA */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+/* HEADER */
+th {
+  background: #2c3e50;
+  color: white;
+  padding: 10px;
+}
+
+/* CELDAS */
+td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+/* FILAS */
+tr:nth-child(even) {
+  background: #f2f2f2;
+}
+
+/* HOVER FILA */
+tr:hover {
+  background: #d6eaf8;
+}
+
+/* BOTON AGREGAR */
+.barra-acciones {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-agregar {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-agregar:hover {
+  background: #1e8449;
+}
+
+/* ICONO EDITAR */
+.editar {
+  cursor: pointer;
+}
+
+.editar:hover {
+  color: #3498db;
+}
+
+.paginacion {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.paginacion button {
+  padding: 5px 12px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+/* CONTENEDOR GENERAL */
+.notif-wrapper {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.notif-box {
+  flex: 1;
+  background: #f8f2f2;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.notif-box h3 {
+  color: #333; /* oscuro */
+  margin-bottom: 10px;
+} 
+
+.notif-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.notif-table th,
+.notif-table td {
+  border: 1px solid #0e194d;
+  padding: 6px;
+  text-align: center;
+}
+
+.notif-table td {
+  color: #222 !important;
+  background-color: #ffffff !important;
+}
+
+.notif-table tr {
+  color: #222 !important;
+}
+
+.notif-table th {
+  background-color: #2c3e50;
+}
+
+.notif-btn {
+  background: #27ae60;
+  color: rgb(240, 243, 235);
+  border: none;
+  padding: 5px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+/* COLUMNA COMENTARIOS */
+.comentarios-col {
+  background-color: #c0392b !important;
+  color: white !important;
+}
+
+.comentarios {
+  color: #c0392b !important;
+  font-weight: bold;
+}
+
+.historial-container {
+  margin: 20px;
+}
+
+.btn-historial {
+  background: #2c3e50;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.panel-historial {
+  background: white;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 10px;
+}
+
+.oculto {
+  display: none;
+}
+
+.btn-pdf {
+  margin-top: 10px;
+  background: #c0392b;
+  color: white;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+#tablaHistorial td {
+  background-color: #f9f9f9;
+}
+
+#tablaHistorial {
+  opacity: 0.95;
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    background: white;
+  }
+
+  .notif-box {
+    background-color: #ffffff !important;
+    border: 1px solid #ccc;
+  }
+
+  .notif-table th {
+    background-color: #2c3e50 !important;
+    color: white !important;
+  }
+
+  .notif-table td {
+    background-color: #ecf0f1 !important;
+  }
+
+  button {
+    display: none !important;
+  }
+}
+
+input.error {
+  border: 2px solid rgb(238, 59, 59);
+  background-color: #ffe6e6;
+}
+
+.btn-guardar {
+  font-size: 16px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-guardar:hover {
+  background-color: #45a049;
+}
+
+
