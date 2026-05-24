@@ -385,7 +385,8 @@ function mostrarCrearUsuario() {
   activarValidacionEnVivo();
 }
 
-function crearUsuario() {
+// Crear usuarios
+async function crearUsuario() {
 
   let valido = true;
 
@@ -395,6 +396,7 @@ function crearUsuario() {
   const curso = document.getElementById("curso");
   const division = document.getElementById("division");
   const email = document.getElementById("email");
+
   const emailValue = email.value.trim().toLowerCase();
 
   const campos = [nombre, apellido, turno, curso, division, email];
@@ -419,125 +421,75 @@ function crearUsuario() {
   });
 
   // 📧 Email
-  const emailValido = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/; 
+  const emailValido = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
 
   if (emailValue !== "" && !emailValido.test(emailValue)) {
     email.style.border = "2px solid red";
     valido = false;
   }
 
-  // 🛑 cortar
-  console.log("Valido:", valido);
-  if (!valido) {
-    return;
-  }
+  if (!valido) return;
 
-  // ✅ CREAR USUARIO
+  // ✅ OBJETO
   const nuevoUsuario = {
-  nombre: nombre.value.trim().toLowerCase(),
-  apellido: apellido.value.trim().toLowerCase(),
-  curso: curso.value.trim(),
-  division: division.value.trim(),
-  turno: turno.value.trim().toLowerCase(),
-  email: emailValue
-};
+    nombre: nombre.value.trim().toLowerCase(),
+    apellido: apellido.value.trim().toLowerCase(),
+    curso: curso.value.trim(),
+    division: division.value.trim(),
+    turno: turno.value.trim().toLowerCase(),
+    email: emailValue
+  };
 
-// 🔍 BUSCAR SIMILARES
-const iguales = buscarUsuariosIguales(nuevoUsuario);
+  try {
 
-// 🚫 SI EXISTEN
-if (iguales.length > 0) {
-  document.getElementById("btnCrear").style.display = "none";
-  document.getElementById("mensajeSistema").innerHTML = `
-    ⚠️ Ya existe un usuario con este nombre y email.<br>
-    ¿Querés recuperar la contraseña?
-    <br><br>
-    <button onclick="cancelarRegistro()">Cancelar</button>
-    <button onclick="recuperarCuenta()">Recuperar cuenta</button>
-  `;
-  return;
-}
+    const response = await fetch("http://localhost:3000/usuarios", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(nuevoUsuario)
+    });
 
-// ✅ GUARDAR
-usuarios.push(nuevoUsuario);
+    const data = await response.json();
 
-console.log(usuarios);
+    // 🚫 USUARIO EXISTENTE (BACKEND)
+    if (!response.ok) {
+      document.getElementById("btnCrear").style.display = "none";
 
-alert("✔ Usuario creado correctamente. Revisá tu email 📩");
+      document.getElementById("mensajeSistema").innerHTML = `
+        ⚠️ Ya existe un usuario con este nombre y email.<br>
+        ¿Querés recuperar la cuenta?
+        <br><br>
+        <button onclick="cancelarRegistro()">Cancelar</button>
+        <button onclick="recuperarCuenta()">Recuperar cuenta</button>
+      `;
 
-// 🧹 limpiar
-campos.forEach(c => c.value = "");
-document.getElementById("mensajeSistema").innerHTML = "";
+      return;
+    }
+
+    // ✅ OK
+    alert(" Usuario creado correctamente, revisa tu email ");
+
+    campos.forEach(c => c.value = "");
+    document.getElementById("mensajeSistema").innerHTML = "";
+
+  } catch (error) {
+    console.error("Error:", error);
+    alert("❌ Error al conectar con el servidor");
+  }
 }
 
 function cancelarRegistro() {
   const campos = document.querySelectorAll("#contenidoPanel input");
   campos.forEach(c => c.value = "");
 
-  document.getElementById("btnCrear").style.display = "";
+  document.getElementById("btnCrear").style.display = "block";
   document.getElementById("mensajeSistema").innerHTML = "";
 }
 
-
 function recuperarCuenta() {
-  alert("📩 Enviando recuperación de cuenta (simulado)");
+  alert("📩 Recuperación de cuenta (lo hacemos después con email)");
 }
-
-function buscarUsuariosIguales(nuevo) {
-  return usuarios.filter(u =>
-    u.nombre.toLowerCase() === nuevo.nombre.toLowerCase() &&
-    u.apellido.toLowerCase() === nuevo.apellido.toLowerCase() &&
-    u.email === nuevo.email
-  );
-}
-
-
-function activarValidacionEnVivo() {
-
-  const campos = document.querySelectorAll("#contenidoPanel input");
-
-  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  campos.forEach(campo => {
-
-    campo.addEventListener("input", () => {
-
-      let valido = true;
-
-      // vacío
-      if (campo.value.trim() === "") {
-        campo.style.border = "1px solid #ccc";
-        return;
-      }
-
-      // solo letras
-      if (["nombre", "apellido", "turno"].includes(campo.id)) {
-        if (campo.value.trim() !== "" && !soloLetras.test(campo.value)) {
-          valido = false;
-        }
-      }
-
-      // email
-     if (campo.id === "email") {
-       const valor = campo.value.trim();
-
-       if (valor === "") {
-    campo.style.border = "1px solid #ccc";
-    return;
-        }
-
-       if (!emailValido.test(valor)) {
-    valido = false;
-       }
-    }
-
-      // 🎯 CLAVE: esto ahora sí reacciona BIEN
-      campo.style.border = valido ? "2px solid green" : "2px solid red";
-    });
-
-  });
-}
-
 
 // 🔔 NOTIFICACIONES
 function mostrarNotificaciones() {
@@ -615,19 +567,19 @@ function mostrarNotificaciones() {
  </div>
   `;
 
-  // 👉 DATOS DE PRUEBA (para que veas filas)
-  agregarPrestamo({
-    alumno: "Gómez Juan",
-    curso: "5°",
-    turno: "Mañana",
-    libro: "El Principito"
-  });
-
-  agregarPrestamo({
-    alumno: "Pérez Ana",
-    curso: "4°",
-    turno: "Tarde",
-    libro: "Matemática 3"
+  // 👉 Conexion de filas de aprobar prestamos con base de datos
+  fetch("http://localhost:3000/prestamos?estado=pendiente")
+  .then(res => res.json())
+  .then(data => {
+    data.forEach(p => {
+      agregarPrestamo({
+        alumno: p.usuario.nombre + " " + p.usuario.apellido,
+        curso: p.usuario.curso,
+        turno: p.usuario.turno,
+        libro: p.libro,
+        id: p._id
+      });
+    });
   });
 
   agregarDevolucion({
@@ -645,12 +597,13 @@ function agregarPrestamo(data) {
 
   const fila = document.createElement("tr");
 
+ fila.dataset.id = data.id;
  fila.innerHTML = `
   <td>${data.alumno}</td>
   <td>${data.curso}</td>
   <td>${data.turno}</td>
   <td>${data.libro}</td>
-  <td>${new Date().toLocaleDateString()}</td>
+  <td>${data.fechaSolicitud ? new Date(data.fechaSolicitud).toLocaleDateString() : ""}</td>
   <td>
     <button class="notif-btn" onclick="aprobarPrestamo(this)">
       Confirmar
@@ -698,26 +651,42 @@ function toggleHistorial() {
 
 function moverAHistorial(boton) {
   const fila = boton.closest("tr");
-  const celdas = fila.querySelectorAll("td");
+  const id = fila.dataset.id;
 
   const comentarioInput = fila.querySelector(".input-comentario");
   const comentario = comentarioInput ? comentarioInput.value : "Sin comentario";
 
-  const nuevaFila = document.createElement("tr");
+  fetch(`http://localhost:3000/prestamos/${id}/devolver`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
 
-  nuevaFila.innerHTML = `
-    <td>${celdas[0].innerText}</td>
-    <td>${celdas[1].innerText}</td>
-    <td>${celdas[2].innerText}</td>
-    <td>${celdas[3].innerText}</td>
-    <td>${celdas[4].innerText}</td>
-    <td>${celdas[5].innerText}</td>
-    <td>${comentario}</td>
-  `;
+    console.log("Devolución registrada:", data);
 
-  document.getElementById("tablaHistorial").appendChild(nuevaFila);
+    // mover a historial UI
+    const celdas = fila.querySelectorAll("td");
 
-  fila.remove();
+    const nuevaFila = document.createElement("tr");
+
+    nuevaFila.innerHTML = `
+      <td>${celdas[0].innerText}</td>
+      <td>${celdas[1].innerText}</td>
+      <td>${celdas[2].innerText}</td>
+      <td>${celdas[3].innerText}</td>
+      <td>${celdas[4].innerText}</td>
+      <td>${new Date(data.fechaDevolucionReal).toLocaleDateString()}</td>
+      <td>${comentario}</td>
+    `;
+
+    document.getElementById("tablaHistorial").appendChild(nuevaFila);
+
+    fila.remove();
+  })
+  .catch(err => console.error(err));
 }
 
 function imprimirPDF() {
@@ -743,18 +712,35 @@ function imprimirPDF() {
 
 function aprobarPrestamo(boton) {
   const fila = boton.closest("tr");
-  const datos = fila.children;
+  const id = fila.dataset.id;
 
-  agregarDevolucion({
-    alumno: datos[0].innerText,
-    curso: datos[1].innerText,
-    turno: datos[2].innerText,
-    libro: datos[3].innerText,
-    fecha: datos[4].innerText,
-    fechaDevolucion: calcularFechaDevolucion()
-  });
+  fetch(`http://localhost:3000/prestamos/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      dias: 7 // después lo hacés dinámico
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
 
-  fila.remove();
+    console.log("Préstamo actualizado:", data);
+
+    // mover a devoluciones
+    agregarDevolucion({
+      alumno: fila.children[0].innerText,
+      curso: fila.children[1].innerText,
+      turno: fila.children[2].innerText,
+      libro: fila.children[3].innerText,
+      fecha: data.fechaPrestamo,
+      fechaDevolucion: data.fechaDevolucion
+    });
+
+    fila.remove();
+  })
+  .catch(err => console.error(err));
 }
 
 function calcularFechaDevolucion() {
@@ -762,3 +748,5 @@ function calcularFechaDevolucion() {
   fecha.setDate(fecha.getDate() + 7); // 7 días de préstamo
   return fecha.toLocaleDateString();
 }
+
+
