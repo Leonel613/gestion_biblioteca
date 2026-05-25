@@ -75,9 +75,8 @@ body {
 
 /* ================= HERO (SOLO INDEX) ================= */
 .hero {
-  background-image: url("http://www.comunidadbaratz.com/wp-content/uploads/Todas-las-bibliotecas-son-bellas-por-el-servicio-que-ofrecen-a-sus-comunidades.jpg");
-  background-size: cover;
-  background-position: center;
+  /* Usar el fondo global del body (fondo-global) para consistencia visual */
+  background: transparent;
   height: calc(100vh - 90px);
   display: flex;
   justify-content: center;
@@ -213,15 +212,21 @@ body.mis-reservas-page {
 }
 
 body.panel-page .panel-container,
-body.catalogo-page .contenedor,
 body.mis-reservas-page .mis-reservas-container {
   background: rgba(255, 255, 255, 0.92);
   color: #333; /* Texto negro para legibilidad */
 }
 
+/* Para la página de catálogo dejamos el contenedor transparente
+   para que la imagen de fondo ocupe todo el espacio. Las tarjetas
+   internas ya tienen fondo blanco y mantienen la legibilidad. */
+body.catalogo-page .contenedor {
+  background: transparent;
+  color: #fff;
+}
+
 body.login-page .login-container,
 body.panel-page .panel-container,
-body.catalogo-page .contenedor,
 body.mis-reservas-page .mis-reservas-container {
   color: #333; /* Texto negro para legibilidad */
 }
@@ -250,13 +255,38 @@ body.login-page .login-container button:hover {
 .contenedor,
 .panel-container,
 .mis-reservas-container {
-   background-color: transparent;
-  width: 80%;
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 25px;
+  background-color: transparent;
+  width: 90%;
+  max-width: 1200px;
+  margin: 90px auto 40px; /* espacio superior mayor para separar del navbar */
+  padding: 10px 14px;
   border-radius: 10px;
 }
+
+/* Dashboard grid for panel */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 20px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+/* Reusable card style for panel */
+.card-panel {
+  background: rgba(255,255,255,0.95);
+  color: #222;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+/* Improve contrast of main container using subtle backdrop */
+.panel-container { backdrop-filter: blur(4px); }
 
 
 /* ================= GRID CATÁLOGO ================= */
@@ -383,23 +413,39 @@ input[type="date"]:focus {
 
 .cancelar-btn {
   margin-top: 10px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   background-color: #e74c3c;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
+/* reservation card */
+.reserva { margin-bottom: 14px; padding: 14px; border-radius: 10px; background: #fff; box-shadow: 0 6px 18px rgba(0,0,0,0.05); }
+.reserva h3 { margin: 0 0 6px; }
+.reserva .meta { color: #555; font-size: 0.95rem; margin-bottom: 8px; }
+.reserva .acciones { display: flex; justify-content: flex-end; }
+
 /* ================= LOGOUT ================= */
-#logoutBtn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 8px 14px;
+/* Logout in navbar */
+#logoutBtn, .logout-button {
   background-color: #e74c3c;
-  border-radius: 6px;
   color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: 600;
+}
+
+.navbar { gap: 12px; }
+.navbar .logout-button { margin-left: 16px; }
+
+@media (max-width:600px) {
+  .navbar { padding: 0.8rem 1rem; }
+  .navbar nav a { font-size: 0.95rem; }
+  #logoutBtn { padding: 6px 8px; }
 }
 
 /* ================= TEXTO ================= */
