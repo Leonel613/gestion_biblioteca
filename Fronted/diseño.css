@@ -304,9 +304,56 @@ body.login-page .login-container button:hover {
 }
 
 #listaLibros {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  /* legacy selector kept for compatibility; overridden by carousel styles */
+}
+
+/* Carousel styles */
+.carousel {
+  position: relative;
+  margin-top: 16px;
+}
+.carousel-wrapper {
+  overflow: hidden; /* hide native scrollbar */
+}
+.carousel-track {
+  display: flex;
   gap: 16px;
+  padding: 8px 56px; /* leave space so cards don't start below the arrows */
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+.carousel-track::-webkit-scrollbar { display: none; }
+.carousel-track .card {
+  flex: 0 0 auto; /* prevent shrinking; keep cards inline */
+  min-width: 230px;
+  max-width: 280px;
+  scroll-snap-align: start;
+}
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.carousel-btn.left { left: 12px; }
+.carousel-btn.right { right: 12px; }
+.carousel-btn:hover { background: rgba(0,0,0,0.75); }
+
+@media (max-width: 900px) {
+  .carousel-track .card { min-width: 200px; }
+  .carousel-btn { display: none; } /* touch scrolling on mobile */
 }
 
 /* ================= TARJETAS ================= */

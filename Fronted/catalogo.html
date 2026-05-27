@@ -25,7 +25,13 @@
     <input type="text" id="buscador" placeholder="Busca por título o autor..." aria-label="Buscador de libros por título o autor">
     <div id="catalogMessage" class="catalog-message"></div>
 
-    <div id="listaLibros"></div>
+    <div class="carousel">
+      <button class="carousel-btn left" aria-label="Anterior">‹</button>
+      <div class="carousel-wrapper">
+        <div id="listaLibros" class="carousel-track"></div>
+      </div>
+      <button class="carousel-btn right" aria-label="Siguiente">›</button>
+    </div>
   </div>
 
   <script src="catalogo.js"></script>
