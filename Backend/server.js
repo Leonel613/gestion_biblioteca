@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const Prestamo = require("./models/Prestamo");
+const Libro = require("./models/Libro");
 
 const app = express();
 
@@ -14,10 +15,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/biblioteca")
 
 app.get("/", (req, res) => {
   res.send("Servidor funcionando 🚀");
-});
-
-app.listen(3000, () => {
-  console.log("Servidor en http://localhost:3000");
 });
 
 app.post("/usuarios", async (req, res) => {
@@ -143,6 +140,93 @@ app.put("/prestamos/:id/devolver", async (req, res) => {
     console.log(error.stack);
     res.status(500).json({ error: "Error al registrar devolución" });
   }
+});
+
+app.post("/libros", async (req, res) => {
+  try {
+    const titulo = req.body.titulo.trim().toLowerCase();
+    const autor = req.body.autor.trim().toLowerCase();
+    const editorial = req.body.editorial.trim().toLowerCase();
+    const edicion = Number(req.body.edicion);
+
+    // 🔍 buscar duplicado real
+    const existe = await Libro.findOne({
+      titulo,
+      autor,
+      editorial,
+      edicion
+    });
+
+    if (existe) {
+      return res.status(400).json({
+        error: "Este libro (misma edición) ya existe"
+      });
+    }
+
+    const nuevo = new Libro({
+      ...req.body,
+      titulo,
+      autor,
+      editorial,
+      edicion
+    });
+
+    await nuevo.save();
+
+    res.json({ mensaje: "Libro guardado" });
+
+  } catch (err) {
+    console.log(err);
+
+    if (err.code === 11000) {
+      return res.status(400).json({
+        error: "Libro duplicado (índice único)"
+      });
+    }
+
+    res.status(500).json({
+      error: "Error al crear libro"
+    });
+  }
+});
+
+app.get("/libros", async (req, res) => {
+  try {
+    const libros = await Libro.find();
+    res.json(libros);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener libros" });
+  }
+});
+
+app.delete("/libros/:id", async (req, res) => {
+  await Libro.findByIdAndDelete(req.params.id);
+  res.json({ mensaje: "Libro eliminado" });
+});
+
+app.put("/libros/:id", async (req, res) => {
+  try {
+    const libroActualizado = await Libro.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    if (!libroActualizado) {
+      return res.status(404).json({ error: "Libro no encontrado" });
+    }
+
+    res.json(libroActualizado);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al actualizar" });
+  }
+});
+
+
+app.listen(3000, () => {
+  console.log("Servidor en http://localhost:3000");
 });
 
 

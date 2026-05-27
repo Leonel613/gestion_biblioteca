@@ -379,4 +379,25 @@ input.error {
   background-color: #45a049;
 }
 
+#panelControl button {
+  width: 100%;
+  margin-bottom: 5px;
+}
 
+.btn-secundario {
+  background: #eee;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.btn-secundario:hover {
+  background: #ddd;
+}
+
+#opcionesFiltro,
+#listaCategorias {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
