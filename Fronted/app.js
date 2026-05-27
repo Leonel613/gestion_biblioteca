@@ -1,4 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+  // Evitar que errores externos/caracteres no manejados detengan la ejecución
+  window.addEventListener('error', function (event) {
+    console.warn('Capturado error (no crítico):', event.message);
+    try { event.preventDefault && event.preventDefault(); } catch(e){}
+  });
+
+  window.addEventListener('unhandledrejection', function (event) {
+    console.warn('Promesa no manejada (silenciada):', event.reason);
+    try { event.preventDefault && event.preventDefault(); } catch(e){}
+  });
 /*
   Asi comentamos varias lineas en Js....
 */
@@ -129,36 +140,40 @@ if (loginForm) {
 
 
 
+    console.log("Login attempt:", email);
+
     // 🔹 LOGIN BIBLIOTECARIO
-
-    if (email === "admin@cudi.com" && password === "1234") {
+    if (email.toLowerCase() === "admin@cudi.com" && password === "1234") {
       localStorage.setItem("rol", "bibliotecario");
-      localStorage.setItem("usuario", email);
-
-
+      localStorage.setItem("usuario", email.toLowerCase().trim());
       window.location.href = "panel_bibliotecario.html";
-    } 
-    // 🔹 LOGIN ALUMNO
-    else if (email === "alumno@cudi.com" && password === "1234") {
-
-      localStorage.setItem("rol", "alumno");
-      localStorage.setItem("usuario", email);
-
-      window.location.href = "panel_alumno.html";
-    } 
-    else {
-      alert("❌ Usuario o contraseña incorrectos");
-
+      return;
     }
 
-    if (email === "alumno@cudi.com" && password === "1234") {
+    // 🔹 LOGIN ALUMNO
+    if (email.toLowerCase() === "alumno@cudi.com" && password === "1234") {
       localStorage.setItem("rol", "alumno");
-      localStorage.setItem("usuario", email);
+      localStorage.setItem("usuario", email.toLowerCase().trim());
       window.location.href = "panel_alumno.html";
       return;
     }
 
+    // Si no matchea
     document.getElementById("loginGeneralError").textContent = "Correo o contraseña incorrectos.";
+  });
+}
+
+// Listener de respaldo para el botón de submit (por si el submit nativo falla)
+const submitLoginBtn = document.getElementById('submitLoginBtn');
+if (submitLoginBtn && loginForm) {
+  submitLoginBtn.addEventListener('click', function (e) {
+    if (!loginForm) return;
+    // requestSubmit si está disponible (mejor) sino dispatchEvent
+    if (typeof loginForm.requestSubmit === 'function') {
+      loginForm.requestSubmit();
+    } else {
+      loginForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }
   });
 }
 
@@ -337,8 +352,9 @@ console.log("JS funcionando en panel alumno");
 
   const lista = document.getElementById("listaReservasPanel");
   const listaCompleta = document.getElementById("listaReservas");
+  // `misPrestamos` ya está declarado más arriba y está disponible aquí
 
-  if (lista || listaCompleta) {
+  if (lista || listaCompleta || misPrestamos) {
     const usuario = localStorage.getItem("usuario");
     let reservas = [];
     try {
@@ -348,7 +364,24 @@ console.log("JS funcionando en panel alumno");
       localStorage.removeItem("reservas");
     }
 
-    const reservasUsuario = reservas.filter(reserva => reserva.usuario === usuario);
+    const reservasUsuario = reservas.filter(reserva => (reserva.usuario || "").toLowerCase().trim() === (usuario || "").toLowerCase().trim());
+    const reservasAprobadas = reservasUsuario.filter(reserva => reserva.estado === "Aprobado");
+
+    if (misPrestamos) {
+      if (reservasAprobadas.length === 0) {
+        misPrestamos.innerHTML = "<li>No hay préstamos actuales. Solo se muestran las reservas aprobadas por el bibliotecario.</li>";
+      } else {
+        misPrestamos.innerHTML = "";
+        reservasAprobadas.forEach(reserva => {
+          const li = document.createElement("li");
+          const rangeText = reserva.fechaDesde && reserva.fechaHasta
+            ? `${reserva.fechaDesde} → ${reserva.fechaHasta} (${reserva.dias || "-"} días)`
+            : (reserva.fecha ? reserva.fecha : "");
+          li.textContent = `${reserva.libro} — ${rangeText}`;
+          misPrestamos.appendChild(li);
+        });
+      }
+    }
 
     if (lista) {
       if (reservasUsuario.length === 0) {
@@ -357,7 +390,26 @@ console.log("JS funcionando en panel alumno");
         lista.innerHTML = "";
         reservasUsuario.forEach(reserva => {
           const li = document.createElement("li");
-          li.textContent = `${reserva.libro} - ${reserva.estado}`;
+          const rangeText = reserva.fechaDesde && reserva.fechaHasta
+            ? `${reserva.fechaDesde} → ${reserva.fechaHasta} (${reserva.dias || "-"} días)`
+            : (reserva.fecha ? reserva.fecha : "");
+          li.textContent = `${reserva.libro} — ${rangeText} — ${reserva.estado}`;
+          lista.appendChild(li);
+        });
+      }
+    }
+
+    if (lista) {
+      if (reservasUsuario.length === 0) {
+        lista.innerHTML = "<li>No tenés reservas</li>";
+      } else {
+        lista.innerHTML = "";
+        reservasUsuario.forEach(reserva => {
+          const li = document.createElement("li");
+          const rangeText = reserva.fechaDesde && reserva.fechaHasta
+            ? `${reserva.fechaDesde} → ${reserva.fechaHasta} (${reserva.dias || "-"} días)`
+            : (reserva.fecha ? reserva.fecha : "");
+          li.textContent = `${reserva.libro} — ${rangeText} — ${reserva.estado}`;
           lista.appendChild(li);
         });
       }
@@ -376,22 +428,29 @@ console.log("JS funcionando en panel alumno");
         const div = document.createElement("div");
         div.classList.add("reserva");
 
+        const desde = reserva.fechaDesde || reserva.fecha || "";
+        const hasta = reserva.fechaHasta || reserva.fecha || "";
+        const dias = reserva.dias || (desde && hasta ? (function(){ const d1=new Date(desde); const d2=new Date(hasta); d1.setHours(0,0,0,0); d2.setHours(0,0,0,0); return Math.floor((d2-d1)/(1000*60*60*24))+1; })() : "-");
+
         div.innerHTML = `
           <h3>${reserva.libro}</h3>
           <p>Autor: ${reserva.autor}</p>
-          <p>Fecha: ${reserva.fecha}</p>
+          <p>Desde: ${desde}</p>
+          <p>Hasta: ${hasta}</p>
+          <p>Días: ${dias}</p>
           <p>Estado: ${reserva.estado}</p>
           <button class="cancelar-btn">Cancelar</button>
         `;
 
         const boton = div.querySelector(".cancelar-btn");
         boton.addEventListener("click", function () {
-          const indiceGlobal = reservas.findIndex(r =>
-            r.usuario === reserva.usuario &&
-            r.libro === reserva.libro &&
-            r.autor === reserva.autor &&
-            r.fecha === reserva.fecha
-          );
+          const indiceGlobal = reservas.findIndex(r => {
+            // compara por rango si existe, sino por fecha única
+            if (r.fechaDesde && r.fechaHasta && reserva.fechaDesde && reserva.fechaHasta) {
+              return r.usuario === reserva.usuario && r.libro === reserva.libro && r.fechaDesde === reserva.fechaDesde && r.fechaHasta === reserva.fechaHasta;
+            }
+            return r.usuario === reserva.usuario && r.libro === reserva.libro && (r.fecha === reserva.fecha || (r.fechaDesde === reserva.fechaDesde && r.fechaHasta === reserva.fechaHasta));
+          });
 
           if (indiceGlobal > -1) {
             reservas.splice(indiceGlobal, 1);
@@ -431,15 +490,15 @@ console.log("JS funcionando en panel alumno");
 
       if (desde) {
         reservasFiltradas = reservasFiltradas.filter(reserva => {
-          const fechaReserva = parsearFecha(reserva.fecha);
-          return fechaReserva && fechaReserva >= desde;
+          const rHasta = parsearFecha(reserva.fechaHasta || reserva.fecha);
+          return rHasta && rHasta >= desde;
         });
       }
 
       if (hasta) {
         reservasFiltradas = reservasFiltradas.filter(reserva => {
-          const fechaReserva = parsearFecha(reserva.fecha);
-          return fechaReserva && fechaReserva <= hasta;
+          const rDesde = parsearFecha(reserva.fechaDesde || reserva.fecha);
+          return rDesde && rDesde <= hasta;
         });
       }
 
@@ -479,21 +538,20 @@ console.log("JS funcionando en panel alumno");
 
   if (logoutBtn) {
     logoutBtn.addEventListener("click", function () {
+      console.log("Logout clicked");
       localStorage.removeItem("usuario");
       localStorage.removeItem("rol");
-      localStorage.removeItem("reservas");
       window.location.href = "login.html";
     });
     }
  
+  const usuario = localStorage.getItem("usuario");
   const rol = localStorage.getItem("rol");
 
   if (usuario && window.location.pathname.includes("login.html")) {
-
     if (rol === "bibliotecario") {
       window.location.href = "panel_bibliotecario.html";
-    } 
-    else if (rol === "alumno") {
+    } else if (rol === "alumno") {
       window.location.href = "panel_alumno.html";
     }
   }
