@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 👉 cargar libros al entrar
-  mostrarLibros();
+    cargarLibros();
 });
 
 
@@ -36,45 +36,88 @@ const filasPorPagina = 10;
 
 
 // 📚 DATOS
-let libros = [
-  {
-    titulo: "El Principito",
-    autor: "Saint-Exupéry",
-    editorial: "Emecé",
-    anio: 1943,
-    edicion: 1,
-    categoria: "Literatura",
-    total: 10,
-    disponible: 6,
-    prestados: 2,
-    reservados: 2,
-    ingreso: "2024-03-10",
-    proveedor: "Editorial Sur"
-  },
-  {
-    titulo: "Matemática 3",
-    autor: "Pérez",
-    editorial: "Santillana",
-    anio: 2020,
-    edicion: 2,
-    categoria: "Educativo",
-    total: 8,
-    disponible: 5,
-    prestados: 2,
-    reservados: 1,
-    ingreso: "2023-08-15",
-    proveedor: "Distribuidora ABC"
+let libros = [];
+let librosOriginales = [];
+let librosFiltrados = [];
+
+function validarCampo(valor, tipo) {
+  if (!tipo) return true;
+
+  const v = valor.trim();
+
+  switch (tipo) {
+   case "textoLibre":
+    return /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s().,:;\-+ª]+$/.test(v);
+
+    case "letras":
+      return /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(v);
+
+    case "numeros":
+      return /^\d+$/.test(v);
+
+    case "numerosOpcional":
+      //  permite números o guiones
+      return /^[0-9-]+$/.test(v);
+
+    case "proveedor":
+      return /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s().,:;\-]+$/.test(v);
+
+    default:
+      return true;
   }
-];
+}
+
+//  ESQUEMA (ORDEN DE COLUMNAS)
+const esquemaLibro = {
+  titulo: "textoLibre",
+  autor: "textoLibre",
+  editorial: "textoLibre",
+  anio: "numeros",
+  edicion: "numerosOpcional",
+  categoria: "letras",
+  total: "numeros",
+  disponible: "numeros",
+  prestados: "numeros",
+  reservados: "numeros",
+  proveedor: "proveedor"
+};
+
+async function cargarLibros() {
+  try {
+    const res = await fetch("http://localhost:3000/libros");
+
+    if (!res.ok) {
+      throw new Error("Error en la API");
+    }
+
+    const data = await res.json();
+
+    // 🔥 sistema correcto
+    librosOriginales = data;
+    librosFiltrados = [...data];
+
+    mostrarLibros(); // 👈 esta ya hace TODO
+
+  } catch (error) {
+    console.error(error);
+    alert("Error al cargar libros");
+  }
+}
 
 
 // 📚 LIBROS
 function mostrarLibros() {
   const contenedor = document.getElementById("contenidoPanel");
 
+  const totalPaginas = Math.ceil(librosFiltrados.length / filasPorPagina) || 1;
+
+   if (paginaActual > totalPaginas) {
+  paginaActual = totalPaginas;
+  }
+
   const inicio = (paginaActual - 1) * filasPorPagina;
   const fin = inicio + filasPorPagina;
-  const librosPagina = libros.slice(inicio, fin);
+  const librosPagina = librosFiltrados.slice(inicio, fin);
 
   let filas = "";
 
@@ -82,7 +125,7 @@ function mostrarLibros() {
     const indexReal = inicio + index;
 
     filas += `
-      <tr data-index="${indexReal}">
+       <tr data-id="${libro._id}">
         <td>${libro.titulo}</td>
         <td>${libro.autor}</td>
         <td>${libro.editorial}</td>
@@ -93,7 +136,7 @@ function mostrarLibros() {
         <td>${libro.disponible}</td>
         <td>${libro.prestados}</td>
         <td>${libro.reservados}</td>
-        <td>${libro.ingreso}</td>
+        <td>${formatearFecha(libro.ingreso)}</td>
         <td>${libro.proveedor}</td>
         <td>
           <button onclick="editarFila(this)">✏️</button>
@@ -103,110 +146,402 @@ function mostrarLibros() {
     `;
   });
 
-  const totalPaginas = Math.ceil(libros.length / filasPorPagina);
+     contenedor.innerHTML = `
+  <div class="tarjeta">
+    <h2>Catálogo de Libros</h2>
 
-  contenedor.innerHTML = `
-    <div class="tarjeta">
-      <h2>Catálogo de Libros</h2>
+    <!-- 🔝 BARRA SUPERIOR -->
+    <div class="barra-acciones" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
 
-      <div class="barra-acciones">
-        <button class="btn-agregar" onclick="formAgregarLibro()">+ Agregar libro</button>
+      <button class="btn-agregar" onclick="formAgregarLibro()">+ Agregar libro</button>
+
+      <!-- FILTRO -->
+      <button id="btnFiltro" class="btn-agregar">Filtrar</button>
+
+      <div id="opcionesFiltro" style="display:none;">
+        <button id="ordenAZ" class="btn-secundario">Orden A-Z</button>
+        <button id="ordenZA" class="btn-secundario">Orden Z-A</button>
       </div>
 
-      <div class="tabla-contenedor">
-        <table>
-          <thead>
-            <tr>
-              <th>Título</th>
-              <th>Autor</th>
-              <th>Editorial</th>
-              <th>Año</th>
-              <th>Edición</th>
-              <th>Categoría</th>
-              <th>Total</th>
-              <th>Disponible</th>
-              <th>Prestados</th>
-              <th>Reservados</th>
-              <th>Ingreso</th>
-              <th>Proveedor</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
+      <!-- CATEGORÍAS -->
+      <button id="btnCategorias" class="btn-agregar">Categorías</button>
 
-          <tbody>
-            ${filas}
-          </tbody>
-        </table>
-      </div>
+      <div id="listaCategorias" style="display:none;"></div>
 
-      <div class="paginacion">
-        <button onclick="cambiarPagina(-1)">⬅</button>
-        <span>Página ${paginaActual} de ${totalPaginas}</span>
-        <button onclick="cambiarPagina(1)">➡</button>
-      </div>
+      <button id="btnVolver" class="btn-secundario" style="display:none;">
+        ⬅ Volver al catálogo
+      </button>
+
     </div>
-  `;
+
+    <!-- 📊 TABLA -->
+    <div class="tabla-contenedor">
+      <table>
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Autor</th>
+            <th>Editorial</th>
+            <th>Año</th>
+            <th>Edición</th>
+            <th>Categoría</th>
+            <th>Total</th>
+            <th>Disponible</th>
+            <th>Prestados</th>
+            <th>Reservados</th>
+            <th>Fecha de Ingreso</th>
+            <th>Proveedor</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${filas || `<tr><td colspan="13">No hay libros cargados</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 📄 PAGINACIÓN -->
+    <div class="paginacion">
+      <button onclick="cambiarPagina(-1)">⬅</button>
+      <span>Página ${paginaActual} de ${totalPaginas}</span>
+      <button onclick="cambiarPagina(1)">➡</button>
+    </div>
+  </div>
+`;
+// 🔽 toggle filtro
+document.getElementById("btnFiltro").addEventListener("click", () => {
+  const div = document.getElementById("opcionesFiltro");
+  div.style.display = div.style.display === "none" ? "flex" : "none";
+});
+
+// 🔽 toggle categorías
+document.getElementById("btnCategorias").addEventListener("click", () => {
+  const div = document.getElementById("listaCategorias");
+  div.style.display = div.style.display === "none" ? "flex" : "none";
+});
+
+// 🔤 ORDEN A-Z
+document.getElementById("ordenAZ").addEventListener("click", () => {
+  librosFiltrados.sort((a, b) => a.titulo.localeCompare(b.titulo));
+  paginaActual = 1;
+  mostrarLibros();
+});
+
+// 🔠 ORDEN Z-A
+document.getElementById("ordenZA").addEventListener("click", () => {
+  librosFiltrados.sort((a, b) => b.titulo.localeCompare(a.titulo));
+  paginaActual = 1;
+  mostrarLibros();
+});
+
+// 🔙 volver al catálogo
+document.getElementById("btnVolver").addEventListener("click", () => {
+  librosFiltrados = [...librosOriginales];
+  paginaActual = 1;
+  mostrarLibros();
+});
+
+// 👇 MUY IMPORTANTE (esto genera las categorías)
+renderCategorias();
 }
 // Funciones de tabla libros
 function editarFila(boton) {
   const fila = boton.closest("tr");
   const celdas = fila.querySelectorAll("td");
 
-  for (let i = 0; i < celdas.length - 1; i++) {
-    const texto = celdas[i].innerText;
-    celdas[i].innerHTML = `<input type="text" value="${texto}">`;
-  }
+  const columnas = [
+    "titulo",
+    "autor",
+    "editorial",
+    "anio",
+    "edicion",
+    "categoria",
+    "total",
+    "disponible",
+    "prestados",
+    "reservados",
+    "proveedor"
+  ];
 
-  boton.innerText = "💾";
-  boton.onclick = function () {
-    guardarFila(this);
-  };
-}
+  celdas.forEach((celda, index) => {
+    // última columna = botones
+    if (index === celdas.length - 1) return;
 
-function guardarFila(boton) {
-  const fila = boton.closest("tr");
-  const index = fila.dataset.index;
+    // fecha no editable
+    if (index === 10) return;
 
-  const inputs = fila.querySelectorAll("input");
-  const nuevosDatos = [];
+    const texto = celda.innerText;
+    const campo = columnas[index];
 
-  inputs.forEach((input) => {
-    const td = input.parentElement;
-    td.innerText = input.value;
-    nuevosDatos.push(input.value);
+    celda.innerHTML = `<input type="text" data-campo="${campo}" value="${texto}">`;
   });
 
-  libros[index] = {
-    titulo: nuevosDatos[0],
-    autor: nuevosDatos[1],
-    editorial: nuevosDatos[2],
-    anio: nuevosDatos[3],
-    edicion: nuevosDatos[4],
-    categoria: nuevosDatos[5],
-    total: nuevosDatos[6],
-    disponible: nuevosDatos[7],
-    prestados: nuevosDatos[8],
-    reservados: nuevosDatos[9],
-    ingreso: nuevosDatos[10],
-    proveedor: nuevosDatos[11],
-  };
+  const celdaBotones = boton.parentElement;
 
-  boton.innerText = "✏️";
-  boton.onclick = function () {
-    editarFila(this);
+  celdaBotones.innerHTML = `
+    <button class="guardar">💾</button>
+    <button class="cancelar">❌</button>
+  `;
+
+  const btnGuardar = celdaBotones.querySelector(".guardar");
+  const btnCancelar = celdaBotones.querySelector(".cancelar");
+
+  btnGuardar.disabled = true;
+
+  btnGuardar.addEventListener("click", () => guardarFila(btnGuardar));
+  btnCancelar.addEventListener("click", () => cancelarEdicion(btnCancelar));
+
+  activarValidacionEdicion(fila, btnGuardar);
+}
+function renderCategorias() {
+  const contenedor = document.getElementById("listaCategorias");
+
+  contenedor.innerHTML = "";
+
+  const categoriasUnicas = [...new Set(librosOriginales.map(l => l.categoria))];
+
+  categoriasUnicas.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.textContent = cat;
+    btn.classList.add("btn-secundario");
+
+    btn.onclick = () => {
+      librosFiltrados = librosOriginales.filter(l => l.categoria === cat);
+      paginaActual = 1;
+      mostrarLibros();
+
+      // 👇 mostrar botón volver DESPUÉS del render
+      setTimeout(() => {
+        document.getElementById("btnVolver").style.display = "inline-block";
+      }, 0);
+    };
+
+    contenedor.appendChild(btn);
+  });
+
+  // botón volver
+  document.getElementById("btnVolver").onclick = () => {
+    librosFiltrados = [...librosOriginales];
+    paginaActual = 1;
+    mostrarLibros();
   };
 }
+//funcion para validar datos editados antes de guardar
+ function activarValidacionEdicion(fila, boton) {
+  const inputs = fila.querySelectorAll("input");
 
-function eliminarFila(boton) {
+  function validar() {
+    let valido = true;
+
+    inputs.forEach(input => {
+      input.style.border = "1px solid #ccc";
+
+      const campo = input.dataset.campo;
+      const tipo = esquemaLibro[campo];
+
+      if (!validarCampo(input.value, tipo)) {
+        input.style.border = "2px solid red";
+        valido = false;
+      }
+    });
+
+    boton.disabled = !valido;
+  }
+
+  inputs.forEach(input => input.addEventListener("input", validar));
+
+  validar();
+}
+
+async function guardarFila(boton) {
   const fila = boton.closest("tr");
-  const index = fila.dataset.index;
+  const id = fila.dataset.id;
 
-  const confirmar = confirm("¿Eliminar este libro?");
-  if (confirmar) {
-    libros.splice(index, 1);
-    mostrarLibros();
+  const inputs = fila.querySelectorAll("input");
+  if (inputs.length === 0) return;
+
+  let valido = true;
+
+  // reset bordes
+  inputs.forEach(input => {
+    input.style.border = "1px solid #ccc";
+  });
+
+  // ARMADO DINÁMICO DEL OBJETO (ESTO ES LO IMPORTANTE)
+  const libroActualizado = {};
+
+  inputs.forEach(input => {
+    const campo = input.dataset.campo;
+    const tipo = esquemaLibro[campo];
+
+    if (!validarCampo(input.value, tipo)) {
+      input.style.border = "2px solid red";
+      valido = false;
+    }
+
+    // guardar valor igual (aunque sea válido lo necesitamos)
+    libroActualizado[campo] = input.value;
+  });
+
+  if (!valido) {
+    alert("⚠️ Revisá los campos en rojo");
+    return;
+  }
+
+  //  conversión de tipos (IMPORTANTE)
+  libroActualizado.anio = Number(libroActualizado.anio);
+  libroActualizado.edicion = Number(libroActualizado.edicion);
+  libroActualizado.total = Number(libroActualizado.total);
+  libroActualizado.disponible = Number(libroActualizado.disponible);
+  libroActualizado.prestados = Number(libroActualizado.prestados);
+  libroActualizado.reservados = Number(libroActualizado.reservados);
+
+  // mantener fecha original
+  libroActualizado.ingreso = new Date(
+    convertirFechaAISO(fila.children[10].innerText)
+  );
+
+  try {
+    const res = await fetch(`http://localhost:3000/libros/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(libroActualizado)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "Error al actualizar");
+      return;
+    }
+
+    alert("✔ Cambios guardados");
+    cargarLibros();
+
+  } catch (err) {
+    console.error(err);
+    alert("Error de conexión");
   }
 }
+
+
+// FUNCIONES PARA VALIDACIONES DE CAMPOS 
+function normalizarTexto(texto) {
+  return texto
+    .toLowerCase()
+    .replace(/\b\w/g, letra => letra.toUpperCase());
+}
+
+function formatearFecha(fechaISO) {
+  const fecha = new Date(fechaISO);
+  const dia = String(fecha.getDate()).padStart(2, "0");
+  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+  const anio = fecha.getFullYear();
+
+  return `${dia}/${mes}/${anio}`;
+}
+
+function convertirFechaAISO(fechaTexto) {
+  const [dia, mes, anio] = fechaTexto.split("/");
+  return `${anio}-${mes}-${dia}`;
+}
+
+function cancelarEdicion(boton) {
+  cargarLibros(); // recarga todo desde DB
+}
+
+async function eliminarFila(boton) {
+  const fila = boton.closest("tr");
+  const id = fila.dataset.id;
+
+  const confirmar = confirm("Este registro se borra permanente de la base de datos, ¿Estas seguro de  Eliminar este libro?");
+  if (!confirmar) return;
+
+  try {
+    const res = await fetch(`http://localhost:3000/libros/${id}`, {
+      method: "DELETE"
+    });
+
+    if (!res.ok) {
+      alert("Error al eliminar");
+      return;
+    }
+
+    // 🔄 recargar desde DB
+    await cargarLibros();
+
+  } catch (error) {
+    console.error(error);
+    alert("Error de conexión");
+  }
+}
+
+
+async function guardarEdicion(id, datos) {
+  try {
+    await fetch(`http://localhost:3000/libros/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(datos)
+    });
+
+    await cargarLibros();
+
+  } catch (error) {
+    console.error(error);
+    alert("Error al editar");
+  }
+}
+
+async function eliminarLibro(id) {
+  try {
+    const res = await fetch(`http://localhost:3000/libros/${id}`, {
+      method: "DELETE"
+    });
+
+    if (!res.ok) {
+      alert("Error al eliminar");
+      return;
+    }
+
+    alert("🗑 Libro eliminado");
+
+    cargarLibros(); // 🔥 vuelve a pedir a la DB
+
+  } catch (error) {
+    console.error(error);
+    alert("Error de conexión");
+  }
+}
+
+async function editarLibro(id, datosActualizados) {
+  try {
+    const res = await fetch(`http://localhost:3000/libros/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(datosActualizados)
+    });
+
+    if (!res.ok) {
+      alert("Error al editar");
+      return;
+    }
+
+    alert("✏️ Libro actualizado");
+
+    cargarLibros();
+
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+
 
  
 // 🔄 CAMBIAR PÁGINA
@@ -225,81 +560,100 @@ function cambiarPagina(direccion) {
 // ➕ FORMULARIO LIBRO
 function formAgregarLibro() {
   const contenedor = document.getElementById("contenidoPanel");
-  
+
   contenedor.innerHTML = `
     <div class="tarjeta">
       <h2>Agregar Libro</h2>
 
-      <input id="titulo" placeholder="Título">
-      <input id="autor" placeholder="Autor">
-      <input id="editorial" placeholder="Editorial">
-      <input id="anio" placeholder="Año de publicación">
-      <input id="edicion" placeholder="N° Edición">
-      <input id="categoria" placeholder="Categoría">
-      <input id="total" placeholder="Cantidad total">
-      <input id="proveedor" placeholder="Proveedor">
+      <input data-campo="titulo" placeholder="Título">
+      <input data-campo="autor" placeholder="Autor">
+      <input data-campo="editorial" placeholder="Editorial">
+      <input data-campo="anio" placeholder="Año de publicación">
+      <input data-campo="edicion" placeholder="N° Edición">
+      <input data-campo="categoria" placeholder="Categoría">
+      <input data-campo="total" placeholder="Cantidad total">
+      <input data-campo="proveedor" placeholder="Proveedor">
+
       <input id="fecha" disabled>
 
-      <button onclick="crearLibro()">Guardar libro</button>
+      <button id="btnGuardar">Guardar libro</button>
     </div>
   `;
+  // fecha validandose en database
   const fechaInput = document.getElementById("fecha");
-  const fechaActual = new Date().toISOString().split("T")[0];
-  fechaInput.value = fechaActual;
-   activarValidacion();
+  fechaInput.value = new Date().toISOString().split("T")[0];
+
+  const inputs = contenedor.querySelectorAll("input[data-campo]");
+  const btnGuardar = document.getElementById("btnGuardar");
+
+  function validarFormulario() {
+    let valido = true;
+
+    inputs.forEach(input => {
+      console.log("BOTÓN GUARDAR CREADO");
+      const campo = input.dataset.campo;
+      const tipo = esquemaLibro[campo];
+
+      const valor = input.value.trim();
+
+      //  SOLO valida si hay algo escrito
+      if (valor.length > 0 && !validarCampo(valor, tipo)) {
+        input.style.border = "2px solid red";
+        valido = false;
+      } else {
+        input.style.border = "1px solid #ccc";
+      }
+
+      //  si está vacío también invalida el submit final
+      if (valor.length === 0) {
+        valido = false;
+      }
+    });
+
+    btnGuardar.disabled = !valido;
+  }
+
+  inputs.forEach(input => {
+    input.addEventListener("input", validarFormulario);
+  });
+
+
+  btnGuardar.addEventListener("click", crearLibro);
 }
 
-function crearLibro() {
-  const titulo = document.getElementById("titulo");
-  const autor = document.getElementById("autor");
-  const editorial = document.getElementById("editorial");
-  const anio = document.getElementById("anio");
-  const edicion = document.getElementById("edicion");
-  const categoria = document.getElementById("categoria");
-  const total = document.getElementById("total");
-  const proveedor = document.getElementById("proveedor");
+async function crearLibro() {
+  const inputs = document.querySelectorAll("#contenidoPanel input[data-campo]");
 
   let valido = true;
+  const datos = {};
 
-  // reset estilos
-  document.querySelectorAll("input").forEach(input => {
+  inputs.forEach(input => {
+    const campo = input.dataset.campo;
+    const tipo = esquemaLibro[campo];
+
+    if (!input.value.trim()) {
+      input.style.border = "2px solid red";
+      valido = false;
+      return;
+    }
+
+    // VALIDACIÓN ESPECIAL edicion (- permitido solo ahí)
+    if (campo === "edicion") {
+      if (!/^\d+$|^-+$/.test(input.value)) {
+        input.style.border = "2px solid red";
+        valido = false;
+        return;
+      }
+    } else {
+      if (!validarCampo(input.value, tipo)) {
+        input.style.border = "2px solid red";
+        valido = false;
+        return;
+      }
+    }
+
     input.style.border = "1px solid #ccc";
-  });
-
-  // regex
-  const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-  const soloNumeros = /^[0-9]+$/;
-
-  // validar vacíos
-  const campos = [titulo, autor, editorial, anio, edicion, categoria, total, proveedor];
-
-  campos.forEach(campo => {
-    if (!campo || campo.value.trim() === "") {
-      campo.style.border = "2px solid red";
-      valido = false;
-    }
-  });
-
-  // validar titulo (solo que no esté vacío)
- if (titulo.value.trim().length < 2) {
-  titulo.style.border = "2px solid red";
-  valido = false;
- }
-
-// validar resto con solo letras
-[autor, editorial, categoria, proveedor].forEach(campo => {
-  if (!soloLetras.test(campo.value)) {
-    campo.style.border = "2px solid red";
-    valido = false;
-  }
- });
-
-  // validar números
-  [anio, edicion, total].forEach(campo => {
-    if (!soloNumeros.test(campo.value)) {
-      campo.style.border = "2px solid red";
-      valido = false;
-    }
+    datos[campo] = input.value;
   });
 
   if (!valido) {
@@ -307,52 +661,52 @@ function crearLibro() {
     return;
   }
 
-  // 📅 fecha automática (UNA sola vez)
-  const fechaActual = new Date().toISOString().split("T")[0];
-
   const nuevoLibro = {
-    titulo: titulo.value,
-    autor: autor.value,
-    editorial: editorial.value,
-    anio: anio.value,
-    edicion: edicion.value,
-    categoria: categoria.value,
-    total: total.value,
-    disponible: total.value,
+    ...datos,
+    anio: Number(datos.anio),
+    edicion: datos.edicion,
+    total: Number(datos.total),
+    disponible: Number(datos.total),
     prestados: 0,
     reservados: 0,
-    ingreso: fechaActual,
-    proveedor: proveedor.value
+    ingreso: new Date().toISOString().split("T")[0]
   };
 
-  libros.push(nuevoLibro);
+  try {
+    const res = await fetch("http://localhost:3000/libros", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(nuevoLibro)
+    });
 
-  alert("✔ Libro agregado correctamente");
-  mostrarLibros();
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "Error al crear libro");
+      return;
+    }
+
+    alert("✔ Libro agregado correctamente");
+
+    inputs.forEach(i => i.value = "");
+
+    await cargarLibros();
+
+  } catch (err) {
+    console.error(err);
+    alert("❌ Error de conexión con el servidor");
+  }
 }
 
 function activarValidacion() {
-  const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-  const soloNumeros = /^[0-9]+$/;
+  const inputs = document.querySelectorAll("#contenidoPanel input");
 
-  const camposLetras = ["titulo", "autor", "editorial", "categoria", "proveedor"];
-  const camposNumeros = ["anio", "edicion", "total"];
-
-  camposLetras.forEach(id => {
-    const input = document.getElementById(id);
+  inputs.forEach(input => {
     input.addEventListener("input", () => {
-      if (!soloLetras.test(input.value)) {
-        input.style.border = "2px solid red";
-      } else {
-        input.style.border = "1px solid #ccc";
-      }
-    });
-  });
+      const campo = input.dataset.campo;
+      const tipo = esquemaLibro[campo];
 
-  camposNumeros.forEach(id => {
-    const input = document.getElementById(id);
-    input.addEventListener("input", () => {
-      if (!soloNumeros.test(input.value)) {
+      if (!validarCampo(input.value, tipo)) {
         input.style.border = "2px solid red";
       } else {
         input.style.border = "1px solid #ccc";
@@ -365,6 +719,18 @@ function activarValidacion() {
 const soloLetras = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/;
 const usuarios = [];
 
+// funcion para quitar color rojo en campos vacios
+function activarValidacionEnVivo() {
+  const inputs = document.querySelectorAll("input");
+
+  inputs.forEach((input) => {
+    input.addEventListener("input", () => {
+      input.style.border = "1px solid #ccc";
+    });
+  });
+}
+
+// 👤 USUARIO
 function mostrarCrearUsuario() {
   document.getElementById("contenidoPanel").innerHTML = `
      <div class="tarjeta tarjeta-formulario">
@@ -384,6 +750,7 @@ function mostrarCrearUsuario() {
   `;
   activarValidacionEnVivo();
 }
+
 
 // Crear usuarios
 async function crearUsuario() {
@@ -567,29 +934,31 @@ function mostrarNotificaciones() {
  </div>
   `;
 
-  // 👉 Conexion de filas de aprobar prestamos con base de datos
-  fetch("http://localhost:3000/prestamos?estado=pendiente")
+  //  Conexion de filas de aprobar prestamos con base de datos
+ fetch("http://localhost:3000/prestamos?estado=pendiente")
   .then(res => res.json())
   .then(data => {
     data.forEach(p => {
       agregarPrestamo({
-        alumno: p.usuario.nombre + " " + p.usuario.apellido,
-        curso: p.usuario.curso,
-        turno: p.usuario.turno,
-        libro: p.libro,
+        alumno: p.usuario?.nombre
+          ? p.usuario.nombre + " " + p.usuario.apellido
+          : "Sin usuario",
+        curso: p.usuario?.curso || "-",
+        turno: p.usuario?.turno || "-",
+        libro: p.libro || "Sin libro",
         id: p._id
       });
     });
-  });
 
-  agregarDevolucion({
-    alumno: "López Carlos",
-    curso: "6°",
-    turno: "Mañana",
-    libro: "Historia",
-    fecha: "10/06/2026",
-    fechaDevolucion: "20/06/2026"
-  });
+    agregarDevolucion({
+      alumno: "López Carlos",
+      curso: "6°",
+      turno: "Mañana",
+      libro: "Historia",
+      fecha: "10/06/2026",
+      fechaDevolucion: "20/06/2026"
+    });
+  }); 
 }
 
 function agregarPrestamo(data) {
@@ -747,6 +1116,5 @@ function calcularFechaDevolucion() {
   const fecha = new Date();
   fecha.setDate(fecha.getDate() + 7); // 7 días de préstamo
   return fecha.toLocaleDateString();
-}
-
+} 
 
