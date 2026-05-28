@@ -401,3 +401,26 @@ input.error {
   flex-direction: column;
   gap: 5px;
 }
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 150px;
+  z-index: 1000;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  text-align: left;
+}

@@ -11,9 +11,15 @@
         <h2>Iniciar Sesión</h2>
 
         <form id="loginForm" novalidate>
-            <label for="email" style="display: none;">Correo electrónico</label>
-            <input type="email" id="email" placeholder="Correo electrónico" aria-label="Correo electrónico" required>
-            <span id="emailError" class="error-message"></span>
+            <label for="dni" style="display: none;">Usuario</label>
+            <input 
+             type="text" 
+             id="dni" 
+             placeholder="Ingrese DNI sin puntos" 
+             aria-label="Usuario (DNI)" 
+             required
+            >
+        <span id="dniError" class="error-message"></span>
 
             <label for="password" style="display: none;">Contraseña</label>
             <input type="password" id="password" placeholder="Contraseña" aria-label="Contraseña" required>

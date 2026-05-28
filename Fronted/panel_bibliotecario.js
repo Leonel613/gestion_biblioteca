@@ -1,5 +1,29 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+  //  PROTECCIÓN ÚNICA Y SEGURA
+  const raw = localStorage.getItem("usuario");
+
+  let usuario = null;
+
+  try {
+    usuario = raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    console.log("LocalStorage corrupto, limpiando...");
+    localStorage.removeItem("usuario");
+  }
+
+  if (!usuario || usuario.rol !== "bibliotecario") {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // cerrar sesión
+  function cerrarSesion() {
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("rol");
+    window.location.href = "login.html";
+  }
+  
   // MENU PERFIL
   const perfil = document.getElementById("perfil");
   const menu = document.getElementById("menuPerfil");
@@ -21,8 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const logout = document.getElementById("logout");
   if (logout) {
     logout.addEventListener("click", () => {
-      window.location.href = "index.html";
-    });
+    cerrarSesion();
+   });
   }
 
   // 👉 cargar libros al entrar
@@ -146,7 +170,7 @@ function mostrarLibros() {
     `;
   });
 
-     contenedor.innerHTML = `
+    contenedor.innerHTML = `
   <div class="tarjeta">
     <h2>Catálogo de Libros</h2>
 
@@ -163,11 +187,13 @@ function mostrarLibros() {
         <button id="ordenZA" class="btn-secundario">Orden Z-A</button>
       </div>
 
-      <!-- CATEGORÍAS -->
-      <button id="btnCategorias" class="btn-agregar">Categorías</button>
+      <!-- ✅ CATEGORÍAS (ARREGLADO) -->
+      <div class="dropdown">
+        <button id="btnCategorias" class="btn-agregar">Categorías</button>
+        <div id="listaCategorias" class="dropdown-menu"></div>
+      </div>
 
-      <div id="listaCategorias" style="display:none;"></div>
-
+      <!-- VOLVER -->
       <button id="btnVolver" class="btn-secundario" style="display:none;">
         ⬅ Volver al catálogo
       </button>
@@ -207,44 +233,66 @@ function mostrarLibros() {
       <span>Página ${paginaActual} de ${totalPaginas}</span>
       <button onclick="cambiarPagina(1)">➡</button>
     </div>
+
   </div>
 `;
-// 🔽 toggle filtro
-document.getElementById("btnFiltro").addEventListener("click", () => {
-  const div = document.getElementById("opcionesFiltro");
-  div.style.display = div.style.display === "none" ? "flex" : "none";
+// 👇 asegurar que arranque cerrado SIEMPRE
+  document.getElementById("listaCategorias").style.display = "none";
+  document.getElementById("opcionesFiltro").style.display = "none";
+ // 🔽 toggle filtro
+const btnFiltro = document.getElementById("btnFiltro");
+const opcionesFiltro = document.getElementById("opcionesFiltro");
+
+btnFiltro.addEventListener("click", (e) => {
+  e.stopPropagation();
+
+  opcionesFiltro.style.display =
+    opcionesFiltro.style.display === "flex" ? "none" : "flex";
 });
 
-// 🔽 toggle categorías
-document.getElementById("btnCategorias").addEventListener("click", () => {
-  const div = document.getElementById("listaCategorias");
-  div.style.display = div.style.display === "none" ? "flex" : "none";
+// 🔽 toggle categorías (DROPDOWN PRO)
+const btnCategorias = document.getElementById("btnCategorias");
+const listaCategorias = document.getElementById("listaCategorias");
+
+btnCategorias.addEventListener("click", (e) => {
+  e.stopPropagation(); // 🔥 evita cierre instantáneo
+
+  listaCategorias.style.display =
+    listaCategorias.style.display === "flex" ? "none" : "flex";
 });
 
+// 🔽 cerrar TODO si hacés click afuera
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".dropdown")) {
+    listaCategorias.style.display = "none";
+  }
+
+  if (!e.target.closest("#btnFiltro") && !e.target.closest("#opcionesFiltro")) {
+    opcionesFiltro.style.display = "none";
+  }
+});
 // 🔤 ORDEN A-Z
 document.getElementById("ordenAZ").addEventListener("click", () => {
   librosFiltrados.sort((a, b) => a.titulo.localeCompare(b.titulo));
   paginaActual = 1;
   mostrarLibros();
 });
-
 // 🔠 ORDEN Z-A
 document.getElementById("ordenZA").addEventListener("click", () => {
   librosFiltrados.sort((a, b) => b.titulo.localeCompare(a.titulo));
   paginaActual = 1;
   mostrarLibros();
 });
-
 // 🔙 volver al catálogo
 document.getElementById("btnVolver").addEventListener("click", () => {
   librosFiltrados = [...librosOriginales];
   paginaActual = 1;
   mostrarLibros();
 });
-
-// 👇 MUY IMPORTANTE (esto genera las categorías)
+// 👇 generar categorías
 renderCategorias();
 }
+
 // Funciones de tabla libros
 function editarFila(boton) {
   const fila = boton.closest("tr");
@@ -294,6 +342,7 @@ function editarFila(boton) {
 
   activarValidacionEdicion(fila, btnGuardar);
 }
+
 function renderCategorias() {
   const contenedor = document.getElementById("listaCategorias");
 
@@ -309,6 +358,7 @@ function renderCategorias() {
     btn.onclick = () => {
       librosFiltrados = librosOriginales.filter(l => l.categoria === cat);
       paginaActual = 1;
+      document.getElementById("listaCategorias").style.display = "none";
       mostrarLibros();
 
       // 👇 mostrar botón volver DESPUÉS del render
@@ -541,9 +591,6 @@ async function editarLibro(id, datosActualizados) {
   }
 }
 
-
-
- 
 // 🔄 CAMBIAR PÁGINA
 function cambiarPagina(direccion) {
   const totalPaginas = Math.ceil(libros.length / filasPorPagina);
@@ -555,7 +602,6 @@ function cambiarPagina(direccion) {
 
   mostrarLibros();
 }
-
 
 // ➕ FORMULARIO LIBRO
 function formAgregarLibro() {
@@ -730,7 +776,6 @@ function activarValidacionEnVivo() {
   });
 }
 
-// 👤 USUARIO
 function mostrarCrearUsuario() {
   document.getElementById("contenidoPanel").innerHTML = `
      <div class="tarjeta tarjeta-formulario">
@@ -738,6 +783,7 @@ function mostrarCrearUsuario() {
 
       <input id="nombre" placeholder="Nombre">
       <input id="apellido" placeholder="Apellido">
+      <input id="dni" placeholder="DNI (sin puntos)">
       <input id="curso" placeholder="Curso">
       <input id="division" placeholder="División">
       <input id="turno" placeholder="Turno">
@@ -750,9 +796,6 @@ function mostrarCrearUsuario() {
   `;
   activarValidacionEnVivo();
 }
-
-
-// Crear usuarios
 async function crearUsuario() {
 
   let valido = true;
@@ -763,15 +806,19 @@ async function crearUsuario() {
   const curso = document.getElementById("curso");
   const division = document.getElementById("division");
   const email = document.getElementById("email");
+  const dni = document.getElementById("dni");
+
+  let dniValue = dni.value.trim().replace(/\D/g, "");
+  dni.value = dniValue;
 
   const emailValue = email.value.trim().toLowerCase();
 
-  const campos = [nombre, apellido, turno, curso, division, email];
+  const campos = [nombre, apellido, dni, turno, curso, division];
 
-  // 🔄 Reset bordes
+  // reset
   campos.forEach(c => c.style.border = "1px solid #ccc");
 
-  // ❌ Vacíos
+  // vacíos
   campos.forEach(c => {
     if (c.value.trim() === "") {
       c.style.border = "2px solid red";
@@ -779,7 +826,7 @@ async function crearUsuario() {
     }
   });
 
-  // 🔤 Solo letras
+  // letras
   [nombre, apellido, turno].forEach(c => {
     if (c.value.trim() !== "" && !soloLetras.test(c.value)) {
       c.style.border = "2px solid red";
@@ -787,65 +834,63 @@ async function crearUsuario() {
     }
   });
 
-  // 📧 Email
-  const emailValido = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+  // DNI (ÚNICA validación real)
+  if (!dniValue) {
+    dni.style.border = "2px solid red";
+    valido = false;
+  } else if (dniValue.length < 3 || dniValue.length > 20) {
+    dni.style.border = "2px solid red";
+    valido = false;
+  }
 
-  if (emailValue !== "" && !emailValido.test(emailValue)) {
+  // email opcional
+  const emailValido = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+  if (emailValue && !emailValido.test(emailValue)) {
     email.style.border = "2px solid red";
     valido = false;
   }
 
   if (!valido) return;
 
-  // ✅ OBJETO
   const nuevoUsuario = {
     nombre: nombre.value.trim().toLowerCase(),
     apellido: apellido.value.trim().toLowerCase(),
+    dni: dniValue,
     curso: curso.value.trim(),
     division: division.value.trim(),
     turno: turno.value.trim().toLowerCase(),
-    email: emailValue
+    email: emailValue || null,
+    activo: false
   };
 
   try {
-
-    const response = await fetch("http://localhost:3000/usuarios", {
+    const response = await fetch("http://localhost:3000/api/usuarios", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nuevoUsuario)
     });
 
     const data = await response.json();
 
-    // 🚫 USUARIO EXISTENTE (BACKEND)
     if (!response.ok) {
       document.getElementById("btnCrear").style.display = "none";
-
       document.getElementById("mensajeSistema").innerHTML = `
-        ⚠️ Ya existe un usuario con este nombre y email.<br>
-        ¿Querés recuperar la cuenta?
-        <br><br>
+        ⚠️ Ya existe un usuario con este DNI.<br>
         <button onclick="cancelarRegistro()">Cancelar</button>
         <button onclick="recuperarCuenta()">Recuperar cuenta</button>
       `;
-
       return;
     }
 
-    // ✅ OK
-    alert(" Usuario creado correctamente, revisa tu email ");
-
+    alert("Usuario creado correctamente");
     campos.forEach(c => c.value = "");
     document.getElementById("mensajeSistema").innerHTML = "";
 
   } catch (error) {
-    console.error("Error:", error);
-    alert("❌ Error al conectar con el servidor");
+    console.error(error);
+    alert("Error servidor");
   }
 }
-
 function cancelarRegistro() {
   const campos = document.querySelectorAll("#contenidoPanel input");
   campos.forEach(c => c.value = "");
@@ -855,7 +900,7 @@ function cancelarRegistro() {
 }
 
 function recuperarCuenta() {
-  alert("📩 Recuperación de cuenta (lo hacemos después con email)");
+  alert("📩 Te enviamos los pasos para recuperar tu cuenta, revisa tu email");
 }
 
 // 🔔 NOTIFICACIONES

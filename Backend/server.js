@@ -3,11 +3,16 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const Prestamo = require("./models/Prestamo");
 const Libro = require("./models/Libro");
+const Usuario = require("./models/Usuario");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+const usuariosRoutes = require("./routes/usuarios");
+
+app.use("/api/usuarios", usuariosRoutes);
 
 mongoose.connect("mongodb://127.0.0.1:27017/biblioteca")
   .then(() => console.log("MongoDB conectado 🟢"))
@@ -17,55 +22,6 @@ app.get("/", (req, res) => {
   res.send("Servidor funcionando 🚀");
 });
 
-app.post("/usuarios", async (req, res) => {
-  try {
-    const Usuario = require("./models/Usuario");
-
-    // 🧠 normalización
-    const nombre = req.body.nombre.trim().toLowerCase();
-    const apellido = req.body.apellido.trim().toLowerCase();
-    const email = req.body.email.trim().toLowerCase();
-
-    // 🔍 buscar duplicado real
-    const existente = await Usuario.findOne({
-    nombre: nombre.trim().toLowerCase(),
-    apellido: apellido.trim().toLowerCase(),
-    email: email.trim().toLowerCase()
-   });
-
-    if (existente) {
-      return res.status(400).json({
-        error: "Usuario ya existe"
-      });
-    }
-
-    // 💾 guardar normalizado
-    const nuevo = new Usuario({
-      ...req.body,
-      nombre,
-      apellido,
-      email
-    });
-
-    await nuevo.save();
-
-    res.json({ mensaje: "Usuario guardado" });
-
-  } 
-
-  catch (error) {
-    console.log(error.stack);
-  if (error.code === 11000) {
-    return res.status(400).json({
-      error: "Usuario ya existe"
-    });
-  }
-
-  res.status(500).json({
-    error: "Error al crear usuario"
-  });
- }
-});
 
 app.post("/prestamos", async (req, res) => {
   try {
@@ -224,6 +180,99 @@ app.put("/libros/:id", async (req, res) => {
   }
 });
 
+async function crearAdmin() {
+  try {
+    const admin = await Usuario.findOne({ dni: "admin" });
+
+    if (!admin) {
+      await Usuario.create({
+        nombre: "admin",
+        apellido: "sistema",
+        dni: "12345",
+        password: "1234",
+        rol: "bibliotecario",
+        activo: true
+      });
+
+      console.log("Admin creado");
+    } else {
+      console.log("Admin ya existe");
+    }
+
+  } catch (error) {
+    console.log("Error creando admin:", error);
+  }
+}
+
+crearAdmin();
+
+app.post("/login", async (req, res) => {
+  try {
+    let { dni, password } = req.body;
+
+    console.log("🔐 LOGIN RECIBIDO:", req.body);
+
+    // 🔥 VALIDACIÓN ROBUSTA DNI
+    if (!dni) {
+      return res.status(400).json({ error: "DNI inválido" });
+    }
+
+    if (typeof dni !== "string") {
+      dni = String(dni);
+    }
+
+    dni = dni.trim();
+
+    if (dni.length < 5 || dni.length > 14) {
+      return res.status(400).json({ error: "DNI inválido" });
+    }
+
+    // 🔍 BUSCAR USUARIO
+    const user = await Usuario.findOne({ dni });
+
+    if (!user) {
+      return res.status(401).json({ error: "Usuario no encontrado" });
+    }
+
+    // 🆕 PRIMER LOGIN (sin contraseña)
+    if (!user.password) {
+      return res.json({
+        primeraVez: true,
+        usuario: {
+          id: user._id,
+          nombre: user.nombre,
+          dni: user.dni,
+          rol: user.rol
+        }
+      });
+    }
+
+    // 🔒 CUENTA INACTIVA
+    if (!user.activo) {
+      return res.status(403).json({ error: "Cuenta no activada" });
+    }
+
+    // 🔑 PASSWORD INCORRECTA
+    if (user.password !== password) {
+      return res.status(401).json({ error: "Credenciales incorrectas" });
+    }
+
+    // ✅ LOGIN OK
+    return res.json({
+      usuario: {
+        id: user._id,
+        nombre: user.nombre,
+        dni: user.dni,
+        rol: user.rol
+      },
+      primeraVez: false
+    });
+
+  } catch (error) {
+    console.error("Error en login:", error);
+    return res.status(500).json({ error: "Error del servidor" });
+  }
+});
 
 app.listen(3000, () => {
   console.log("Servidor en http://localhost:3000");
