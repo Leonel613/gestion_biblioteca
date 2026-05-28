@@ -22,14 +22,77 @@ app.get("/", (req, res) => {
   res.send("Servidor funcionando 🚀");
 });
 
+function calcularDisponibilidad(libro) {
+  const disponibles =
+    (libro.total ?? 0) -
+    (libro.reservados ?? 0) -
+    (libro.prestados ?? 0);
+
+  return {
+    ...libro.toObject(),
+    disponibles,
+    disponible: disponibles > 0
+  };
+}
 
 app.post("/prestamos", async (req, res) => {
   try {
+
+    // 1. validar id
+    if (!req.body.libroId) {
+      return res.status(400).json({ error: "Falta libroId" });
+    }
+
+    // 2. buscar libro
+    const libro = await Libro.findById(req.body.libroId);
+
+    if (!libro) {
+      return res.status(404).json({ error: "Libro no encontrado" });
+    }
+
+    // 3. validar conflicto de fechas
+    const conflicto = await Prestamo.findOne({
+      libroId: req.body.libroId,
+      estado: { $in: ["pendiente", "activo"] },
+      $or: [
+        {
+          fechaDesde: { $lte: req.body.fechaHasta },
+          fechaHasta: { $gte: req.body.fechaDesde }
+        }
+      ]
+    });
+
+    if (conflicto) {
+      return res.status(400).json({
+        error: "Ya existe una reserva para ese rango de fechas"
+      });
+    }
+
+    // 4. validar stock
+    const disponibles =
+      (libro.total ?? 0) -
+      (libro.prestados ?? 0) -
+      (libro.reservados ?? 0);
+
+    if (disponibles <= 0) {
+      return res.status(400).json({
+        error: "No hay disponibilidad para este libro"
+      });
+    }
+
+    // 5. crear préstamo
     const nuevo = new Prestamo(req.body);
     await nuevo.save();
+
+    // 6. actualizar stock
+    await Libro.findByIdAndUpdate(req.body.libroId, {
+      $inc: { reservados: 1 }
+    });
+
     res.json(nuevo);
+
   } catch (error) {
-    console.log(error.stack);
+    console.log(error);
     res.status(500).json({ error: "Error al crear préstamo" });
   }
 });
@@ -52,7 +115,7 @@ const data = await Prestamo.find(filtro);
 
 app.put("/prestamos/:id", async (req, res) => {
   try {
-    const dias = req.body.dias || 7; // default 7 días
+    const dias = req.body.dias || 7;
 
     const hoy = new Date();
 
@@ -60,6 +123,8 @@ app.put("/prestamos/:id", async (req, res) => {
 
     const fechaDevolucion = new Date();
     fechaDevolucion.setDate(hoy.getDate() + dias);
+
+    const prestamo = await Prestamo.findById(req.params.id);
 
     const actualizado = await Prestamo.findByIdAndUpdate(
       req.params.id,
@@ -71,7 +136,15 @@ app.put("/prestamos/:id", async (req, res) => {
       { new: true }
     );
 
+    await Libro.findByIdAndUpdate(prestamo.libroId, {
+      $inc: {
+        prestados: 1,
+        reservados: -1
+      }
+    });
+
     res.json(actualizado);
+
   } catch (error) {
     console.log(error.stack);
     res.status(500).json({ error: "Error al actualizar préstamo" });
@@ -82,6 +155,8 @@ app.put("/prestamos/:id/devolver", async (req, res) => {
   try {
     const hoy = new Date();
 
+    const prestamo = await Prestamo.findById(req.params.id);
+
     const actualizado = await Prestamo.findByIdAndUpdate(
       req.params.id,
       {
@@ -91,7 +166,14 @@ app.put("/prestamos/:id/devolver", async (req, res) => {
       { new: true }
     );
 
+    await Libro.findByIdAndUpdate(prestamo.libroId, {
+      $inc: {
+        prestados: -1
+      }
+    });
+
     res.json(actualizado);
+
   } catch (error) {
     console.log(error.stack);
     res.status(500).json({ error: "Error al registrar devolución" });
@@ -149,7 +231,11 @@ app.post("/libros", async (req, res) => {
 app.get("/libros", async (req, res) => {
   try {
     const libros = await Libro.find();
-    res.json(libros);
+
+    const respuesta = libros.map(calcularDisponibilidad);
+
+    res.json(respuesta);
+
   } catch (error) {
     res.status(500).json({ error: "Error al obtener libros" });
   }

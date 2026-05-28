@@ -32,14 +32,40 @@
   </section>
 
   <!-- ================= CATÁLOGO DENTRO DE INICIO ================= -->
-  <section class="catalogo-home">
-    <div class="mis-reservas-container">
-      <h2>Catálogo </h2>
-      <input type="text" id="buscador" placeholder="Buscar por título o autor..." style="width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #ccc;" />
-      <div id="listaLibros"></div>
-      <a href="catalogo.html" class="boton" style="margin-top: 15px; display: inline-block;">Ver catálogo completo</a>
-    </div>
-  </section>
+<section class="catalogo-home">
+  <div class="mis-reservas-container">
+
+    <h2>Catálogo</h2>
+
+    <input 
+      type="text" 
+      id="buscador" 
+      placeholder="Buscar por título o autor..."
+      style="width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #ccc;"
+    />
+
+    <!-- 🔥 CATÁLOGO HOME (CAROUSEL) -->
+<div class="carousel">
+
+  <button class="carousel-btn left" aria-label="Anterior">‹</button>
+
+  <div class="carousel-wrapper">
+    
+    <!-- 🔥 ESTE ES EL CONTENEDOR CORRECTO -->
+    <div id="listaLibros" class="carousel-track"></div>
+
+  </div>
+
+  <button class="carousel-btn right" aria-label="Siguiente">›</button>
+
+</div>
+
+<a href="catalogo.html" class="boton" style="margin-top: 15px; display: inline-block;">
+  Ver catálogo completo
+</a>
+
+  </div>
+</section>
 
   <!-- ================= CONTACTO ================= -->
   <section class="contacto" id="contacto">
@@ -51,7 +77,7 @@
   </section>
 
   <script src="app.js"></script>
-  <script src="catalogo.js"></script>
+  <script src="home.js"></script>
 </body>
 </html>
 
