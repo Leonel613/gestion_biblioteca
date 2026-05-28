@@ -1,17 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   console.log("Panel alumno cargado");
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
-
-  if (!usuario || usuario.rol !== "alumno") {
-  window.location.href = "login.html";
-  }
 
   // ================= USUARIO =================
   const raw = localStorage.getItem("usuario");
   const usuario = raw ? JSON.parse(raw) : null;
 
-  if (!usuario) {
+  if (!usuario || usuario.rol !== "alumno") {
     window.location.href = "login.html";
     return;
   }
@@ -19,76 +14,59 @@ document.addEventListener("DOMContentLoaded", () => {
   // ================= ELEMENTOS =================
   const listaLibros = document.getElementById("listaLibros");
   const misPrestamos = document.getElementById("misPrestamos");
-  const busquedaLibro = document.getElementById("busquedaLibro");
+  const listaReservas = document.getElementById("listaReservas"); // ✔ FIX
 
-  // ================= LIBROS (mock por ahora) =================
-  let librosDisponibles = [
-    "Cien años de soledad",
-    "Don Quijote de la Mancha",
-    "El Principito",
-    "1984 - George Orwell",
-    "La Odisea"
-  ];
+  // ================= RESERVAS =================
+  async function cargarReservasAprobadas() {
+    try {
+      const res = await fetch(`http://localhost:3000/mis-reservas/${usuario._id || usuario.id}`);
+      const data = await res.json();
 
-  let librosPrestados = [];
+      if (!listaReservas) return;
 
-  // ================= RENDER =================
-  function renderizar(filtro = "") {
+      listaReservas.innerHTML = "";
 
-    if (!listaLibros || !misPrestamos) return;
+      data.forEach(reserva => {
+        const div = document.createElement("div");
+        div.classList.add("card", "reserva");
 
-    listaLibros.innerHTML = "";
-    misPrestamos.innerHTML = "";
+        div.innerHTML = `
+          <h3>${reserva.libro}</h3>
+          <p>Estado: ${reserva.estado}</p>
+        `;
 
-    const filtrados = filtro
-      ? librosDisponibles.filter(l =>
-          l.toLowerCase().includes(filtro.toLowerCase())
-        )
-      : librosDisponibles;
-
-    // DISPONIBLES
-    filtrados.forEach(libro => {
-      const li = document.createElement("li");
-      li.textContent = libro;
-
-      const btn = document.createElement("button");
-      btn.textContent = "Reservar";
-
-      btn.addEventListener("click", () => {
-        librosPrestados.push(libro);
-        librosDisponibles = librosDisponibles.filter(l => l !== libro);
-        renderizar(filtro);
+        listaReservas.appendChild(div);
       });
 
-      li.appendChild(btn);
-      listaLibros.appendChild(li);
-    });
-
-    // PRESTADOS
-    librosPrestados.forEach(libro => {
-      const li = document.createElement("li");
-      li.textContent = libro;
-
-      const btn = document.createElement("button");
-      btn.textContent = "Devolver";
-
-      btn.addEventListener("click", () => {
-        librosDisponibles.push(libro);
-        librosPrestados = librosPrestados.filter(l => l !== libro);
-        renderizar(filtro);
-      });
-
-      li.appendChild(btn);
-      misPrestamos.appendChild(li);
-    });
+    } catch (error) {
+      console.error("Error reservas:", error);
+    }
   }
 
-  renderizar();
+  // ================= PRESTAMOS =================
+  async function cargarMisPrestamos() {
+    try {
+      const res = await fetch(`http://localhost:3000/prestamos?usuario=${encodeURIComponent(usuario.dni)}`);
+      const data = await res.json();
 
-  if (busquedaLibro) {
-    busquedaLibro.addEventListener("input", (e) => {
-      renderizar(e.target.value);
-    });
+      if (!misPrestamos) return;
+
+      misPrestamos.innerHTML = "";
+
+      data.forEach(p => {
+        const li = document.createElement("li");
+
+        const desde = p.fechaDesde ? new Date(p.fechaDesde).toLocaleDateString() : "";
+        const hasta = p.fechaHasta ? new Date(p.fechaHasta).toLocaleDateString() : "";
+
+        li.textContent = `${p.libro} — ${p.estado} — ${desde} → ${hasta}`;
+
+        misPrestamos.appendChild(li);
+      });
+
+    } catch (err) {
+      console.error("Error préstamos:", err);
+    }
   }
 
   // ================= LOGOUT =================
@@ -98,18 +76,14 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "login.html";
   }
 
-  const panel = document.querySelector(".panel-container");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-  if (panel && !document.getElementById("logoutBtn")) {
-    const btn = document.createElement("button");
-    btn.id = "logoutBtn";
-    btn.textContent = "Cerrar sesión";
-    btn.style.marginTop = "20px";
-
-    btn.addEventListener("click", cerrarSesion);
-
-    panel.appendChild(btn);
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", cerrarSesion);
   }
 
-  console.log("Panel alumno OK");
+  // ================= INIT =================
+  cargarReservasAprobadas();
+  cargarMisPrestamos();
+
 });

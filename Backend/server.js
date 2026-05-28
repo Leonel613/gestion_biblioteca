@@ -15,7 +15,23 @@ const usuariosRoutes = require("./routes/usuarios");
 app.use("/api/usuarios", usuariosRoutes);
 
 mongoose.connect("mongodb://127.0.0.1:27017/biblioteca")
-  .then(() => console.log("MongoDB conectado 🟢"))
+  .then(async () => {
+    console.log("MongoDB conectado 🟢");
+
+    try {
+      await Usuario.collection.updateMany({ email: null }, { $unset: { email: "" } });
+      const indexes = await Usuario.collection.indexes();
+      const emailIndex = indexes.find(index => index.name === "email_1");
+
+      if (emailIndex && !emailIndex.sparse) {
+        await Usuario.collection.dropIndex("email_1");
+        await Usuario.collection.createIndex({ email: 1 }, { unique: true, sparse: true });
+        console.log("Índice email_1 recreado como sparse");
+      }
+    } catch (indexErr) {
+      console.log("Advertencia índice email:", indexErr);
+    }
+  })
   .catch(err => console.log("Error Mongo:", err));
 
 app.get("/", (req, res) => {
@@ -37,27 +53,42 @@ function calcularDisponibilidad(libro) {
 
 app.post("/prestamos", async (req, res) => {
   try {
+    const { libroId, fechaDesde, fechaHasta, usuario } = req.body;
 
-    // 1. validar id
-    if (!req.body.libroId) {
+    console.log("📝 POST /prestamos - Body recibido:", JSON.stringify(req.body, null, 2));
+
+    if (!libroId) {
       return res.status(400).json({ error: "Falta libroId" });
     }
 
-    // 2. buscar libro
-    const libro = await Libro.findById(req.body.libroId);
+    if (!fechaDesde || !fechaHasta) {
+      return res.status(400).json({ error: "Faltan fechas de reserva" });
+    }
+
+    const desde = new Date(fechaDesde);
+    const hasta = new Date(fechaHasta);
+
+    if (Number.isNaN(desde.getTime()) || Number.isNaN(hasta.getTime())) {
+      return res.status(400).json({ error: "Fechas inválidas" });
+    }
+
+    if (desde > hasta) {
+      return res.status(400).json({ error: "El rango de fechas es inválido" });
+    }
+
+    const libro = await Libro.findById(libroId);
 
     if (!libro) {
       return res.status(404).json({ error: "Libro no encontrado" });
     }
 
-    // 3. validar conflicto de fechas
     const conflicto = await Prestamo.findOne({
-      libroId: req.body.libroId,
+      libroId,
       estado: { $in: ["pendiente", "activo"] },
       $or: [
         {
-          fechaDesde: { $lte: req.body.fechaHasta },
-          fechaHasta: { $gte: req.body.fechaDesde }
+          fechaDesde: { $lte: hasta },
+          fechaHasta: { $gte: desde }
         }
       ]
     });
@@ -68,7 +99,6 @@ app.post("/prestamos", async (req, res) => {
       });
     }
 
-    // 4. validar stock
     const disponibles =
       (libro.total ?? 0) -
       (libro.prestados ?? 0) -
@@ -80,14 +110,30 @@ app.post("/prestamos", async (req, res) => {
       });
     }
 
-    // 5. crear préstamo
-    const nuevo = new Prestamo(req.body);
+    let usuarioData = usuario;
+    if (typeof usuarioData === "string") {
+      usuarioData = { nombre: usuarioData };
+    }
+
+    const nuevo = new Prestamo({
+      ...req.body,
+      usuario: usuarioData,
+      libroId,
+      libro: libro.titulo,
+      autor: libro.autor,
+      fechaDesde: desde,
+      fechaHasta: hasta,
+      fechaDevolucion: hasta,
+      estado: req.body.estado || "pendiente"
+    });
+
     await nuevo.save();
 
-    // 6. actualizar stock
-    await Libro.findByIdAndUpdate(req.body.libroId, {
+    await Libro.findByIdAndUpdate(libroId, {
       $inc: { reservados: 1 }
     });
+
+    console.log("✅ Préstamo guardado exitosamente:", nuevo._id, "Usuario DNI:", usuarioData.dni);
 
     res.json(nuevo);
 
@@ -102,10 +148,20 @@ app.get("/prestamos", async (req, res) => {
     const filtro = {};
 
     if (req.query.estado) {
-   filtro.estado = req.query.estado;
-   }
+      filtro.estado = req.query.estado;
+    }
+    // permitir filtrar por usuario (dni)
+    if (req.query.usuario) {
+      // buscar prestamos donde usuario.dni coincida
+      filtro["usuario.dni"] = req.query.usuario;
+    }
 
-const data = await Prestamo.find(filtro);
+    console.log("🔍 GET /prestamos - Filtro:", JSON.stringify(filtro));
+
+    const data = await Prestamo.find(filtro);
+    
+    console.log("📊 Préstamos encontrados:", data.length, "con filtro:", JSON.stringify(filtro));
+
     res.json(data);
   } catch (error) {
     console.log(error.stack);
@@ -115,6 +171,8 @@ const data = await Prestamo.find(filtro);
 
 app.put("/prestamos/:id", async (req, res) => {
   try {
+    console.log("✏️ PUT /prestamos/:id -", req.params.id, "- Body:", JSON.stringify(req.body));
+
     const dias = req.body.dias || 7;
 
     const hoy = new Date();
@@ -136,6 +194,8 @@ app.put("/prestamos/:id", async (req, res) => {
       { new: true }
     );
 
+    console.log("✅ Préstamo actualizado a ACTIVO:", actualizado._id);
+
     await Libro.findByIdAndUpdate(prestamo.libroId, {
       $inc: {
         prestados: 1,
@@ -153,6 +213,8 @@ app.put("/prestamos/:id", async (req, res) => {
 
 app.put("/prestamos/:id/devolver", async (req, res) => {
   try {
+    console.log("🔄 PUT /prestamos/:id/devolver -", req.params.id);
+
     const hoy = new Date();
 
     const prestamo = await Prestamo.findById(req.params.id);
@@ -166,6 +228,8 @@ app.put("/prestamos/:id/devolver", async (req, res) => {
       { new: true }
     );
 
+    console.log("✅ Préstamo registrado como DEVUELTO:", actualizado._id);
+
     await Libro.findByIdAndUpdate(prestamo.libroId, {
       $inc: {
         prestados: -1
@@ -177,6 +241,33 @@ app.put("/prestamos/:id/devolver", async (req, res) => {
   } catch (error) {
     console.log(error.stack);
     res.status(500).json({ error: "Error al registrar devolución" });
+  }
+});
+
+app.delete("/prestamos/:id", async (req, res) => {
+  try {
+    console.log("🗑️ DELETE /prestamos/:id -", req.params.id);
+
+    const prestamo = await Prestamo.findById(req.params.id);
+    if (!prestamo) return res.status(404).json({ error: "Préstamo no encontrado" });
+
+    if (prestamo.estado !== "pendiente") {
+      return res.status(400).json({ error: "Solo se pueden cancelar solicitudes pendientes" });
+    }
+
+    await Prestamo.findByIdAndDelete(req.params.id);
+
+    // actualizar stock
+    if (prestamo.libroId) {
+      await Libro.findByIdAndUpdate(prestamo.libroId, { $inc: { reservados: -1 } });
+    }
+
+    console.log("✅ Solicitud cancelada:", req.params.id);
+
+    res.json({ mensaje: "Solicitud cancelada" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al cancelar solicitud" });
   }
 });
 
@@ -268,13 +359,14 @@ app.put("/libros/:id", async (req, res) => {
 
 async function crearAdmin() {
   try {
-    const admin = await Usuario.findOne({ dni: "admin" });
+    const admin = await Usuario.findOne({ dni: "12345" });
 
     if (!admin) {
       await Usuario.create({
         nombre: "admin",
         apellido: "sistema",
         dni: "12345",
+        email: "admin@localhost",
         password: "1234",
         rol: "bibliotecario",
         activo: true
@@ -359,7 +451,22 @@ app.post("/login", async (req, res) => {
     return res.status(500).json({ error: "Error del servidor" });
   }
 });
+app.get("/mis-reservas/:usuarioId", async (req, res) => {
+  try {
+    const { usuarioId } = req.params;
 
+    const reservas = await Reserva.find({
+      usuarioId: usuarioId,
+      estado: "aprobada"
+    });
+
+    res.json(reservas);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener reservas" });
+  }
+});
 app.listen(3000, () => {
   console.log("Servidor en http://localhost:3000");
 });

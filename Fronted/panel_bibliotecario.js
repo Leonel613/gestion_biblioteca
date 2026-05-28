@@ -983,6 +983,7 @@ function mostrarNotificaciones() {
  fetch("http://localhost:3000/prestamos?estado=pendiente")
   .then(res => res.json())
   .then(data => {
+    console.log("📝 Préstamos pendientes cargados:", data);
     data.forEach(p => {
       agregarPrestamo({
         alumno: p.usuario?.nombre
@@ -1003,7 +1004,11 @@ function mostrarNotificaciones() {
       fecha: "10/06/2026",
       fechaDevolucion: "20/06/2026"
     });
-  }); 
+      console.log("Llamando a cargarPrestamosActuales");
+      // cargar préstamos activos también
+      cargarPrestamosActuales();
+  })
+  .catch(err => console.error("Error cargando préstamos pendientes:", err)); 
 }
 
 function agregarPrestamo(data) {
@@ -1037,6 +1042,7 @@ function agregarDevolucion(data) {
   const estado = devol < hoy ? "Demorado" : "En fecha";
 
   const fila = document.createElement("tr");
+  if (data.id) fila.dataset.id = data.id;
 
   fila.innerHTML = `
     <td>${data.alumno}</td>
@@ -1055,6 +1061,29 @@ function agregarDevolucion(data) {
   `;
 
   tabla.appendChild(fila);
+}
+
+function cargarPrestamosActuales() {
+  console.log("🔄 cargarPrestamosActuales - iniciando carga de préstamos activos");
+  fetch("http://localhost:3000/prestamos?estado=activo")
+    .then(res => res.json())
+    .then(data => {
+      console.log("📊 Préstamos activos recibidos:", data);
+      data.forEach(p => {
+        agregarDevolucion({
+          id: p._id,
+          alumno: p.usuario?.nombre
+            ? p.usuario.nombre + " " + p.usuario.apellido
+            : "Sin usuario",
+          curso: p.usuario?.curso || "-",
+          turno: p.usuario?.turno || "-",
+          libro: p.libro || "Sin libro",
+          fecha: p.fechaPrestamo,
+          fechaDevolucion: p.fechaDevolucion
+        });
+      });
+    })
+    .catch(err => console.error("Error cargando préstamos activos:", err));
 }
 
 
@@ -1148,6 +1177,7 @@ function aprobarPrestamo(boton) {
       curso: fila.children[1].innerText,
       turno: fila.children[2].innerText,
       libro: fila.children[3].innerText,
+      id: data._id || data.id,
       fecha: data.fechaPrestamo,
       fechaDevolucion: data.fechaDevolucion
     });

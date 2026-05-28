@@ -10,7 +10,7 @@ router.post("/", async (req, res) => {
   nombre: req.body.nombre,
   apellido: req.body.apellido,
   dni: req.body.dni,
-  email: req.body.email || null,
+  email: req.body.email || undefined,
   curso: req.body.curso,
   division: req.body.division,
   turno: req.body.turno,
@@ -48,10 +48,14 @@ router.post("/login", async (req, res) => {
   if (!user.password) {
     return res.json({
       primeraVez: true,
-      usuario: user
+      usuario: {
+        id: user._id,
+        nombre: user.nombre,
+        dni: user.dni,
+        rol: user.rol
+      }
     });
   }
-
 
   // PASSWORD
   if (user.password !== password) {
@@ -73,6 +77,39 @@ router.post("/login", async (req, res) => {
     },
     primeraVez: false
   });
+});
+
+router.post("/activar", async (req, res) => {
+  try {
+    const { dni, password } = req.body;
+
+    if (!dni || typeof dni !== "string" || dni.length < 5 || dni.length > 14) {
+      return res.status(400).json({ error: "DNI inválido" });
+    }
+
+    if (!password || typeof password !== "string" || password.trim().length < 4) {
+      return res.status(400).json({ error: "Contraseña inválida" });
+    }
+
+    const user = await Usuario.findOne({ dni: dni.trim() });
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    if (user.password) {
+      return res.status(400).json({ error: "Cuenta ya tiene contraseña" });
+    }
+
+    user.password = password.trim();
+    user.activo = true;
+    await user.save();
+
+    return res.json({ mensaje: "Cuenta activada correctamente" });
+  } catch (err) {
+    console.error("Error activando cuenta:", err);
+    return res.status(500).json({ error: "Error del servidor" });
+  }
 });
 
 // siempre al final

@@ -95,7 +95,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         boton.addEventListener("click", async () => {
 
-          const usuario = (localStorage.getItem("usuario") || "").toLowerCase().trim();
+          const rawUsuario = localStorage.getItem("usuario");
+          const usuario = rawUsuario ? JSON.parse(rawUsuario) : null;
 
           if (!usuario) {
             alert("Debes iniciar sesión");
@@ -121,17 +122,24 @@ document.addEventListener("DOMContentLoaded", function () {
             (1000 * 60 * 60 * 24)
           ) + 1;
 
+          const usuarioData = {
+            nombre: usuario.nombre || usuario.dni || "",
+            dni: usuario.dni || "",
+            rol: usuario.rol || ""
+          };
+
           try {
             const res = await fetch("http://localhost:3000/prestamos", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                usuario,
+                usuario: usuarioData,
                 libroId: libro._id,
                 libro: libro.titulo,
                 autor: libro.autor,
                 fechaDesde,
                 fechaHasta,
+                fechaDevolucion: fechaHasta,
                 dias,
                 estado: "pendiente"
               })
@@ -146,6 +154,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
             alert("Solicitud enviada al bibliotecario");
             cargarLibros();
+
+            // notificar al panel alumno que recargue sus préstamos
+            try {
+              const channel = new BroadcastChannel("reservas");
+              channel.postMessage({ tipo: "nueva-reserva", libro: libro.titulo });
+              channel.close();
+            } catch (err) {
+              console.log("BroadcastChannel no disponible, usando localStorage");
+              localStorage.setItem("ultima-reserva", JSON.stringify({ libro: libro.titulo, timestamp: Date.now() }));
+            }
 
           } catch (err) {
             console.error(err);

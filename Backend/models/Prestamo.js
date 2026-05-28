@@ -5,33 +5,51 @@ const prestamoSchema = new mongoose.Schema({
     nombre: String,
     apellido: String,
     curso: String,
-    turno: String
+    turno: String,
+    dni: String,
+    rol: String
+  },
+  libroId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Libro",
+    required: true
   },
   libro: String,
+  autor: String,
 
   fechaSolicitud: {
-  type: Date,
-  default: Date.now
-},
+    type: Date,
+    default: Date.now
+  },
 
-fechaRetiro: {
-  type: Date,
-  default: null
-},
+  fechaDesde: {
+    type: Date,
+    required: true
+  },
+
+  fechaHasta: {
+    type: Date,
+    required: true
+  },
+
+  fechaRetiro: {
+    type: Date,
+    default: null
+  },
 
   fechaPrestamo: {
-  type: Date,
-  default: Date.now
-},
+    type: Date,
+    default: Date.now
+  },
 
   fechaDevolucion: {
-  type: Date,
-  required: true
+    type: Date,
+    required: true
   },
 
   fechaDevolucionReal: {
-  type: Date,
-  default: null
+    type: Date,
+    default: null
   },
 
   estado: {

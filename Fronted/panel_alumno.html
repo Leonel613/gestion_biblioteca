@@ -5,47 +5,64 @@
     <title>Panel Alumno</title>
     <link rel="stylesheet" href="diseño.css">
 </head>
+
 <body class="panel-page">
+
+    <!-- ================= NAVBAR ================= -->
     <header class="navbar">
-      <h2 class="logo">Biblioteca CUDI</h2>
-      <nav>
-        <a href="index.html">Inicio</a>
-        <a href="panel_alumno.html">Panel</a>
-        <a href="catalogo.html">Catálogo</a>
-        <a href="#misReservas">Mis reservas</a>
-      </nav>
-      <button id="logoutBtn" class="logout-button" aria-label="Cerrar sesión del usuario">Cerrar sesión</button>
+        <h2 class="logo">Biblioteca CUDI</h2>
+
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="panel_alumno.html">Panel</a>
+            <a href="catalogo.html">Catálogo</a>
+            <a href="#misReservas">Mis reservas</a>
+        </nav>
+
+        <!-- 🔥 BOTÓN FIJO (JS SOLO LE AGREGA EVENTO) -->
+        <button id="logoutBtn" class="logout-button">
+            Cerrar sesión
+        </button>
     </header>
-<div class="panel-container">
-    <h1>Panel del Alumno</h1>
 
-    <p id="bienvenida"></p>
+    <!-- ================= CONTENIDO ================= -->
+    <div class="panel-container">
 
-    <div class="dashboard-grid">
-      <div class="card-panel">
-        <h2>Resumen de Reservas</h2>
-        <ul id="listaReservasPanel"></ul>
-        <a href="#misReservas" class="boton">Ver todas</a>
-        <p>Accede al catálogo y gestiona tus préstamos y reservas sin perder tiempo.</p>
-        <a href="catalogo.html" class="boton">Ir al catálogo</a>
-      </div>
+        <h1>Panel del Alumno</h1>
 
-      <div class="card-panel">
-        <h2>Préstamos actuales</h2>
-        <ul id="misPrestamos"></ul>
-      </div>
+        <p id="bienvenida"></p>
+
+        <div class="dashboard-grid">
+
+            <div class="card-panel">
+                <h2>Resumen de Reservas</h2>
+
+                <ul id="listaReservasPanel"></ul>
+
+                <a href="#misReservas" class="boton">Ver todas</a>
+
+                <p>Accede al catálogo y gestiona tus préstamos y reservas sin perder tiempo.</p>
+
+                <a href="catalogo.html" class="boton">Ir al catálogo</a>
+            </div>
+
+            <div class="card-panel">
+                <h2>Préstamos actuales</h2>
+                <ul id="misPrestamos"></ul>
+            </div>
+
+        </div>
+
+        <section id="misReservas" class="mis-reservas-container card-panel">
+            <h2>Mis Reservas</h2>
+
+            <div id="listaReservas"></div>
+        </section>
+
     </div>
 
-    <section id="misReservas" class="mis-reservas-container card-panel">
-      <h2>Mis Reservas</h2>
-
-      <div id="listaReservas"></div>
-    </section>
-
-</div>
-
+    <!-- ================= JS ================= -->
     <script src="panel_alumno.js"></script>
-   
 
 </body>
 </html>

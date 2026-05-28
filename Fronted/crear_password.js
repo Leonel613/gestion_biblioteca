@@ -1,9 +1,13 @@
 const usuario = JSON.parse(localStorage.getItem("usuario"));
+const API_BASE = "http://localhost:3000/api/usuarios";
 
 const btn = document.getElementById("btnCrear");
 
-btn.addEventListener("click", async () => {
+if (!usuario) {
+  window.location.href = "login.html";
+}
 
+btn.addEventListener("click", async () => {
   const p1 = document.getElementById("password1").value.trim();
   const p2 = document.getElementById("password2").value.trim();
   const error = document.getElementById("error");
@@ -21,7 +25,7 @@ btn.addEventListener("click", async () => {
   }
 
   try {
-    const res = await fetch("/api/usuarios/activar", {  // 👈 usamos la misma ruta
+    const res = await fetch(`${API_BASE}/activar`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
