@@ -1,78 +1,77 @@
-window.addEventListener("DOMContentLoaded", () => {
-  console.log("INPUT DNI:", document.getElementById("dni"));
-  console.log("VALUE DNI:", document.getElementById("dni")?.value);
-});
+document.addEventListener("DOMContentLoaded", () => {
 
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("APP.JS CARGADO");
-console.log("INPUT DNI:", document.getElementById("dni").value);
-console.log("INPUT PASSWORD:", document.getElementById("password").value);
+  console.log("APP.JS CARGADO");
 
-  // Evitar que errores externos/caracteres no manejados detengan la ejecución
+  // ================= SAFE ELEMENTS =================
+  const dniInput = document.getElementById("dni");
+  const passwordInput = document.getElementById("password");
+
+  if (dniInput) {
+    console.log("INPUT DNI:", dniInput.value);
+  }
+
+  if (passwordInput) {
+    console.log("INPUT PASSWORD:", passwordInput.value);
+  }
+
+  // ================= ERROR HANDLERS =================
   window.addEventListener('error', function (event) {
-    console.warn('Capturado error (no crítico):', event.message);
-    try { event.preventDefault && event.preventDefault(); } catch(e){}
+    console.warn('Error no crítico:', event.message);
   });
 
   window.addEventListener('unhandledrejection', function (event) {
-    console.warn('Promesa no manejada (silenciada):', event.reason);
-    try { event.preventDefault && event.preventDefault(); } catch(e){}
+    console.warn('Promise error:', event.reason);
   });
-/*
-  Asi comentamos varias lineas en Js....
-*/
 
-// ================= SCROLL SUAVE =================
-const scrollLinks = document.querySelectorAll('.scroll-link');
+  // ================= SCROLL =================
+  const scrollLinks = document.querySelectorAll('.scroll-link');
 
-scrollLinks.forEach(link => {
-  link.addEventListener('click', function(e) {
-    e.preventDefault();
-    const targetId = this.getAttribute('href').substring(1);
-    const target = document.getElementById(targetId);
+  scrollLinks.forEach(link => {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
 
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
+      const targetId = this.getAttribute('href')?.substring(1);
+      const target = document.getElementById(targetId);
+
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
   });
-});
 
+  // ================= FAQ =================
   const preguntas = document.querySelectorAll(".faq-question");
 
   if (preguntas.length > 0) {
+
     preguntas.forEach(pregunta => {
+
       pregunta.addEventListener("click", () => {
 
-        const respuestaActual = pregunta.nextElementSibling;
+        const respuesta = pregunta.nextElementSibling;
 
-        // cerrar todas
-        document.querySelectorAll(".faq-answer").forEach(respuesta => {
-          if (respuesta !== respuestaActual) {
-            respuesta.style.maxHeight = null;
-          }
+        const isOpen = respuesta.style.maxHeight;
+
+        document.querySelectorAll(".faq-answer").forEach(r => {
+          r.style.maxHeight = null;
         });
 
-        document.querySelectorAll(".faq-question").forEach(btn => {
-          if (btn !== pregunta) {
-            btn.classList.remove("active");
-          }
+        document.querySelectorAll(".faq-question").forEach(q => {
+          q.classList.remove("active");
         });
 
-        // toggle actual
-        if (respuestaActual.style.maxHeight) {
-          respuestaActual.style.maxHeight = null;
-          pregunta.classList.remove("active");
-        } else {
-          respuestaActual.style.maxHeight = respuestaActual.scrollHeight + "px";
+        if (!isOpen) {
+          respuesta.style.maxHeight = respuesta.scrollHeight + "px";
           pregunta.classList.add("active");
         }
 
       });
+
     });
+
   }
 
 });
-
 
 // ================= LOGIN =================
 console.log("APP.JS CARGADO");
