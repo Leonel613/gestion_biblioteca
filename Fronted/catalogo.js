@@ -164,4 +164,33 @@ document.addEventListener("DOMContentLoaded", function () {
     mostrarLibros(filtrados);
   });
 
+  // ---------- Carousel navigation (flechas) ----------
+  const carouselLeft = document.querySelector('.carousel-btn.left');
+  const carouselRight = document.querySelector('.carousel-btn.right');
+  const track = document.querySelector('.carousel-track');
+  const wrapper = document.querySelector('.carousel-wrapper');
+
+  function scrollAmount() {
+    if (!wrapper) return 300;
+    return Math.max(Math.floor(wrapper.clientWidth * 0.8), 240);
+  }
+
+  if (carouselLeft && carouselRight && track && wrapper) {
+    carouselLeft.addEventListener('click', function() {
+      track.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
+    });
+
+    carouselRight.addEventListener('click', function() {
+      track.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
+    });
+
+    // allow vertical wheel to scroll horizontally over the track
+    track.addEventListener('wheel', function(e) {
+      if (Math.abs(e.deltaY) > 0) {
+        track.scrollBy({ left: e.deltaY, behavior: 'auto' });
+        e.preventDefault();
+      }
+    }, { passive: false });
+  }
+
 });
